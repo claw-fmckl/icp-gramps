@@ -1,0 +1,9 @@
+node_modules/
+dist/
+target/
+.dfx/
+.env
+*.wasm
+*.wasm.gz
+canister_ids.json
+.decrypted_env
