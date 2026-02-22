@@ -14,16 +14,16 @@
 
 **Tasks:**
 
-- [ ] Add `hex` crate to `server/Cargo.toml`
-- [ ] Implement `server/src/db/mod.rs`: `new_handle()`, `next_gramps_id()`
-- [ ] Create `server/src/db/person.rs`: `Person` struct, `PersonInput` struct, `list()`, `get()`, `create()`, `update()`, `delete()`, `count()`
-- [ ] Declare `pub mod person` in `server/src/db/mod.rs`
-- [ ] Add Candid API functions to `server/src/lib.rs`: `list_persons`, `get_person`, `create_person`, `update_person`, `delete_person`
-- [ ] Create `server/src/routes/api/` directory
-- [ ] Create `server/src/routes/api/persons/index.rs` (GET list + POST create)
-- [ ] Create `server/src/routes/api/persons/_handle/index.rs` (GET one + PUT update + DELETE)
-- [ ] Update all `mod.rs` files to declare new modules
-- [ ] Update `server/server.did` with Person type and new methods
+- [x] Add `hex` crate to `server/Cargo.toml`
+- [x] Implement `server/src/db/mod.rs`: `new_handle()`, `next_gramps_id()`
+- [x] Create `server/src/db/person.rs`: `Person` struct, `PersonInput` struct, `list()`, `get()`, `create()`, `update()`, `delete()`, `count()`
+- [x] Declare `pub mod person` in `server/src/db/mod.rs`
+- [x] Add Candid API functions to `server/src/lib.rs`: `list_persons`, `get_person`, `create_person`, `update_person`, `delete_person`
+- [x] Create `server/src/routes/api/` directory
+- [x] Create `server/src/routes/api/persons/index.rs` (GET list + POST create)
+- [x] Create `server/src/routes/api/persons/_handle/index.rs` (GET one + PUT update + DELETE)
+- [x] Update all `mod.rs` files to declare new modules
+- [x] Update `server/server.did` with Person type and new methods
 
 **Verification:**
 ```bash

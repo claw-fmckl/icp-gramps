@@ -1,4 +1,35 @@
+type Person = record {
+  handle : text;
+  gramps_id : text;
+  gender : int64;
+  given_names : text;
+  call_name : opt text;
+  surname : text;
+  suffix : opt text;
+  title_text : opt text;
+  birth_ref_handle : opt text;
+  death_ref_handle : opt text;
+  private : bool;
+  change_date : int64;
+  created_at : int64;
+};
+
+type PersonInput = record {
+  gender : int64;
+  given_names : text;
+  call_name : opt text;
+  surname : text;
+  suffix : opt text;
+  title_text : opt text;
+  private : opt bool;
+};
+
 service : {
   http_request : (record { url : text; method : text; headers : vec record { text; text }; body : vec nat8 }) -> (record { status_code : nat16; headers : vec record { text; text }; body : vec nat8; upgrade : opt bool }) query;
   http_request_update : (record { url : text; method : text; headers : vec record { text; text }; body : vec nat8 }) -> (record { status_code : nat16; headers : vec record { text; text }; body : vec nat8; upgrade : opt bool });
+  list_persons : () -> (vec Person) query;
+  get_person : (text) -> (opt Person) query;
+  create_person : (PersonInput) -> (opt Person);
+  update_person : (text, PersonInput) -> (opt Person);
+  delete_person : (text) -> (bool);
 };

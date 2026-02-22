@@ -917,6 +917,7 @@ name = "server"
 version = "0.1.0"
 dependencies = [
  "candid",
+ "hex",
  "ic-asset-router",
  "ic-cdk",
  "ic-rusqlite",

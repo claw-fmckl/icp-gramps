@@ -53,3 +53,32 @@ fn http_request(req: HttpRequest) -> HttpResponse<'static> {
 fn http_request_update(req: HttpRequest) -> HttpResponse<'static> {
     route_tree::ROUTES.with(|routes| ic_asset_router::http_request_update(req, routes))
 }
+
+// --- Candid API ---
+
+#[query]
+fn list_persons() -> Vec<db::person::Person> {
+    db::person::Person::list()
+}
+
+#[query]
+fn get_person(handle: String) -> Option<db::person::Person> {
+    db::person::Person::get(&handle)
+}
+
+#[update]
+async fn create_person(input: db::person::PersonInput) -> Option<db::person::Person> {
+    let handle = db::new_handle().await;
+    let gramps_id = with_connection(|conn| db::next_gramps_id(conn, "person"));
+    db::person::Person::create(&handle, &gramps_id, &input)
+}
+
+#[update]
+fn update_person(handle: String, input: db::person::PersonInput) -> Option<db::person::Person> {
+    db::person::Person::update(&handle, &input)
+}
+
+#[update]
+fn delete_person(handle: String) -> bool {
+    db::person::Person::delete(&handle)
+}
