@@ -86,10 +86,10 @@ sqlite3 :memory: '.read server/src/migrations/001_initial.sql'  # no errors
 
 **Tasks:**
 
-- [ ] Implement `server/src/lib.rs` (init, pre_upgrade, post_upgrade, http_request, http_request_update)
-- [ ] Implement `server/src/routes/index.rs` (GET / handler serving index.html)
-- [ ] Implement `server/src/routes/mod.rs`
-- [ ] Implement `server/src/db/mod.rs` (empty module)
+- [x] Implement `server/src/lib.rs` (init, pre_upgrade, post_upgrade, http_request, http_request_update)
+- [x] Implement `server/src/routes/index.rs` (GET / handler serving index.html)
+- [x] Implement `server/src/routes/mod.rs`
+- [x] Implement `server/src/db/mod.rs` (empty module)
 
 **Verification:**
 ```bash

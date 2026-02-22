@@ -1,1 +1,1 @@
-// Route handlers
+pub mod index;
