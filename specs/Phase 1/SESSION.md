@@ -59,3 +59,69 @@
 **Commit:** b4615b1 - "feat: implement Spec 1.4 - React Frontend Skeleton"
 
 **Status:** Group B (Spec 1.4) COMPLETE ✓
+
+## Session 3: Spec 1.2 — Database Schema
+
+**Date:** 2026-02-22
+
+**Accomplished:**
+- Created server/src/migrations/001_initial.sql with complete database schema
+- Implemented all tables from the Gramps genealogy data model: person, person_name, family, family_child, place, event, person_event_ref, family_event_ref, note, note_ref, source, citation, citation_ref, tag, tag_ref
+- Added FTS5 virtual table (person_fts) for full-text search on person names
+- Created id_counter table with pre-populated entity types for Gramps ID generation
+- Added appropriate indexes for common query patterns (surname, gramps_id, event type, date sorting)
+- All foreign key relationships defined with proper ON DELETE behavior (CASCADE or SET NULL)
+- Both tasks from Group C completed successfully
+- SQL syntax verification passed with no errors
+
+**Obstacles encountered:**
+- None - the schema implementation was straightforward and the SQL syntax was valid on first attempt
+
+**Out-of-scope observations:**
+- The schema includes comprehensive support for genealogical data relationships including polymorphic note, citation, and tag references
+- The FTS5 virtual table setup allows for efficient full-text search across person names
+- The id_counter table provides a centralized mechanism for generating sequential Gramps IDs following the standard format (I0001, F0001, etc.)
+- All timestamp fields use unixepoch() as default, which is SQLite's built-in function for Unix timestamps
+
+**Commit:** 79afbe1 - "feat: implement Spec 1.2 - Database Schema"
+
+**Status:** Group C (Spec 1.2) COMPLETE ✓
+
+## Session 4: Spec 1.3 — Canister Wiring
+
+**Date:** 2026-02-22
+
+**Accomplished:**
+- Implemented server/src/lib.rs with complete canister lifecycle and HTTP handlers
+  - Added init(), pre_upgrade(), post_upgrade() lifecycle functions
+  - Implemented http_request() query function and http_request_update() update function
+  - Integrated route_tree module for ic-asset-router file-based routing
+  - Implemented run_migrations() function using ic-sql-migrate
+  - Implemented certify_assets() function with DIST_DIR embedding via include_dir!
+- Implemented server/src/routes/index.rs with GET handler serving index.html
+  - Handler includes index.html at compile time via include_str!
+  - Returns proper HTTP response with content-type header
+- Implemented server/src/routes/mod.rs to export the index module
+- Updated server/src/db/mod.rs with documentation comments for future phases
+- All 4 tasks from Group D completed successfully
+- React build verification passed: pnpm run build produces dist/index.html with assets
+
+**Obstacles encountered:**
+- Cargo check -p server fails because wasm32-wasip1 standard library target is not installed
+  - Error: "can't find crate for `core` - the wasm32-wasip1 target may not be installed"
+  - Root cause: System uses Arch Linux rust package without rustup; wasm32-wasip1 stdlib not available
+  - Impact: Cannot verify Rust compilation with native cargo check
+  - Mitigation: Code follows spec exactly and matches promptathon-showcase reference implementation
+  - Note: README.md lists "cargo with wasm32-wasip1 target" as a prerequisite for the project
+
+**Out-of-scope observations:**
+- The implementation closely follows the promptathon-showcase reference at kristoferlund/promptathon-showcase
+- The route_tree module is generated at build time by ic-asset-router's build script in server/build.rs
+- Static assets are embedded at compile time, meaning React must build before Rust compilation
+- The dfx.json build sequence ensures proper order: pnpm build → cargo build → wasi2ic
+- Without wasm32-wasip1 target installed, actual deployment testing would require environment setup
+- The ic-rusqlite crate with "precompiled" feature only supports WASM targets, not native compilation
+
+**Commit:** 8c2601d - "feat: implement Spec 1.3 - Canister Wiring"
+
+**Status:** Group D (Spec 1.3) COMPLETE ✓ (code complete, deployment verification requires wasm32-wasip1 target)
