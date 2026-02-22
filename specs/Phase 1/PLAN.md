@@ -70,8 +70,8 @@ tsc --noEmit      # no TypeScript errors
 
 **Tasks:**
 
-- [ ] Create `server/src/migrations/001_initial.sql` (full schema from spec)
-- [ ] Verify SQL syntax: `sqlite3 :memory: '.read server/src/migrations/001_initial.sql'`
+- [x] Create `server/src/migrations/001_initial.sql` (full schema from spec)
+- [x] Verify SQL syntax: `sqlite3 :memory: '.read server/src/migrations/001_initial.sql'`
 
 **Verification:**
 ```bash
