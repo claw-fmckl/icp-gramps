@@ -137,6 +137,7 @@ export const idlFactory: IDL.InterfaceFactory = ({ IDL }) => {
     create_person: IDL.Func([PersonInput], [IDL.Opt(Person)], []),
     update_person: IDL.Func([IDL.Text, PersonInput], [IDL.Opt(Person)], []),
     delete_person: IDL.Func([IDL.Text], [IDL.Bool], []),
+    search_persons: IDL.Func([IDL.Text], [IDL.Vec(Person)], ['query']),
     create_event: IDL.Func([EventInput], [IDL.Opt(Event)], []),
     update_event: IDL.Func([IDL.Text, EventInput], [IDL.Opt(Event)], []),
     delete_event: IDL.Func([IDL.Text], [IDL.Bool], []),

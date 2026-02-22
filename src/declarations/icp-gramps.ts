@@ -96,6 +96,7 @@ export interface _SERVICE {
   create_person: (input: PersonInput) => Promise<Person | null>;
   update_person: (handle: string, input: PersonInput) => Promise<Person | null>;
   delete_person: (handle: string) => Promise<boolean>;
+  search_persons: (query: string) => Promise<Person[]>;
   create_event: (input: EventInput) => Promise<Event | null>;
   update_event: (handle: string, input: EventInput) => Promise<Event | null>;
   delete_event: (handle: string) => Promise<boolean>;

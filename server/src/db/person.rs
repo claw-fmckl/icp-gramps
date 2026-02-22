@@ -113,6 +113,17 @@ impl Person {
                 ],
             )
             .ok()?;
+
+            // Insert into FTS5 index
+            let full_name = format!("{} {}", input.given_names, input.surname)
+                .trim()
+                .to_string();
+            conn.execute(
+                "INSERT INTO person_fts (person_handle, full_name) VALUES (?1, ?2)",
+                rusqlite::params![handle, full_name],
+            )
+            .ok()?;
+
             Person::get(handle)
         })
     }
@@ -136,12 +147,36 @@ impl Person {
                 ],
             )
             .ok()?;
+
+            // Update FTS5 index (delete + reinsert)
+            conn.execute(
+                "INSERT INTO person_fts(person_fts, person_handle, full_name) VALUES ('delete', ?1, '')",
+                rusqlite::params![handle],
+            )
+            .ok()?;
+
+            let full_name = format!("{} {}", input.given_names, input.surname)
+                .trim()
+                .to_string();
+            conn.execute(
+                "INSERT INTO person_fts (person_handle, full_name) VALUES (?1, ?2)",
+                rusqlite::params![handle, full_name],
+            )
+            .ok()?;
+
             Person::get(handle)
         })
     }
 
     pub fn delete(handle: &str) -> bool {
         with_connection(|conn| {
+            // Delete from FTS5 index
+            conn.execute(
+                "INSERT INTO person_fts(person_fts, person_handle, full_name) VALUES ('delete', ?1, '')",
+                [handle],
+            )
+            .ok();
+
             conn.execute("DELETE FROM person WHERE handle = ?1", [handle])
                 .map(|n| n > 0)
                 .unwrap_or(false)
@@ -152,6 +187,44 @@ impl Person {
         with_connection(|conn| {
             conn.query_row("SELECT COUNT(*) FROM person", [], |r| r.get(0))
                 .unwrap_or(0)
+        })
+    }
+
+    pub fn search(query: &str) -> Vec<Self> {
+        with_connection(|conn| {
+            let search_query = format!("{}*", query.trim());
+            let mut stmt = conn
+                .prepare(
+                    "SELECT p.handle, p.gramps_id, p.gender, p.given_names, p.call_name, p.surname,
+                            p.suffix, p.title_text, p.birth_ref_handle, p.death_ref_handle,
+                            p.private, p.change_date, p.created_at
+                     FROM person p
+                     JOIN person_fts f ON f.person_handle = p.handle
+                     WHERE person_fts MATCH ?1
+                     ORDER BY rank
+                     LIMIT 50",
+                )
+                .unwrap();
+            stmt.query_map([search_query], |row| {
+                Ok(Person {
+                    handle: row.get(0)?,
+                    gramps_id: row.get(1)?,
+                    gender: row.get(2)?,
+                    given_names: row.get(3)?,
+                    call_name: row.get(4)?,
+                    surname: row.get(5)?,
+                    suffix: row.get(6)?,
+                    title_text: row.get(7)?,
+                    birth_ref_handle: row.get(8)?,
+                    death_ref_handle: row.get(9)?,
+                    private: row.get::<_, i64>(10)? != 0,
+                    change_date: row.get(11)?,
+                    created_at: row.get(12)?,
+                })
+            })
+            .unwrap()
+            .filter_map(|r| r.ok())
+            .collect()
         })
     }
 }

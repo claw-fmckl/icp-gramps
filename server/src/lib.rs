@@ -83,6 +83,11 @@ fn delete_person(handle: String) -> bool {
     db::person::Person::delete(&handle)
 }
 
+#[query]
+fn search_persons(query: String) -> Vec<db::person::Person> {
+    db::person::Person::search(&query)
+}
+
 // --- Event API ---
 
 #[update]

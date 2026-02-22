@@ -6,15 +6,15 @@
 
 **Tasks:**
 
-- [ ] Update `Person::create` in `server/src/db/person.rs` — insert into person_fts after successful insert
-- [ ] Update `Person::update` — delete + reinsert into person_fts
-- [ ] Update `Person::delete` — delete from person_fts
-- [ ] Implement `Person::search(query: &str) -> Vec<Person>` using FTS5 MATCH with prefix wildcard
-- [ ] Add `search_persons(query: String) -> Vec<Person>` Candid query method to `server/src/lib.rs`
-- [ ] Update `server/server.did` with search_persons method
-- [ ] Update `src/declarations/` with search_persons method
-- [ ] Update `src/routes/__root.tsx` — add search input to nav with 300ms debounce, dropdown results
-- [ ] Create `src/routes/search.tsx` — search results page at `/search?q=...`
+- [x] Update `Person::create` in `server/src/db/person.rs` — insert into person_fts after successful insert
+- [x] Update `Person::update` — delete + reinsert into person_fts
+- [x] Update `Person::delete` — delete from person_fts
+- [x] Implement `Person::search(query: &str) -> Vec<Person>` using FTS5 MATCH with prefix wildcard
+- [x] Add `search_persons(query: String) -> Vec<Person>` Candid query method to `server/src/lib.rs`
+- [x] Update `server/server.did` with search_persons method
+- [x] Update `src/declarations/` with search_persons method
+- [x] Update `src/routes/__root.tsx` — add search input to nav with 300ms debounce, dropdown results
+- [x] Create `src/routes/search.tsx` — search results page at `/search?q=...`
 
 **Verification:**
 ```bash

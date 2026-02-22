@@ -98,6 +98,7 @@ service : {
   create_person : (PersonInput) -> (opt Person);
   update_person : (text, PersonInput) -> (opt Person);
   delete_person : (text) -> (bool);
+  search_persons : (text) -> (vec Person) query;
   create_event : (EventInput) -> (opt Event);
   update_event : (text, EventInput) -> (opt Event);
   delete_event : (text) -> (bool);
