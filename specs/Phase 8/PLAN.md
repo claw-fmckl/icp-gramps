@@ -138,11 +138,11 @@ assert!(updated.is_some());
 ```
 
 **Tasks:**
-- [ ] Rewrite `test_update_person` to: create via HTTP POST, then update via Candid `update_person` call, then verify via HTTP GET
-- [ ] Rewrite `test_delete_person` to: create via HTTP POST, then delete via Candid `delete_person` call, then verify via HTTP GET returns 404
-- [ ] Fix `test_homepage_returns_200` if still failing — add `#[route(certification = "skip")]` to the index route handler OR remove the route and rely on ic-asset-router's built-in index.html serving from DIST_DIR
-- [ ] Run `cargo test -p e2e-tests 2>&1` — must output `test result: ok. X passed; 0 failed`
-- [ ] Commit: `test: all e2e tests passing`
+- [x] Rewrite `test_update_person` (done via Group C Candid fix)
+- [x] Rewrite `test_delete_person` (done via Group C Candid fix)
+- [x] Fix `test_homepage_returns_200` (certification skip applied)
+- [x] Run `cargo test -p e2e-tests` — 7 passed, 0 failed ✅
+- [x] Commit: done ✅
 
 **Important Candid types needed in test file:**
 ```rust
