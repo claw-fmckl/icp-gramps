@@ -91,3 +91,46 @@
 - Partial work committed with descriptive message
 - 4 of 7 tests passing represents significant progress on E2E testing infrastructure
 - Remaining 3 test failures need deeper investigation of PocketIC behavior or canister state management
+
+## Session 3: Spec 8.1 Group C — Fix E2E Test Failures
+
+**Date:** Sun Feb 22 2026
+
+**Accomplished:**
+- Fixed the FTS5 delete operation in `Person::update()` method
+- Changed from incorrect INSERT-based 'delete' command to standard SQL DELETE statement
+- The issue was that the FTS5 special syntax `INSERT INTO person_fts(person_fts, person_handle, full_name) VALUES ('delete', ?1, '')` was incorrect for FTS5
+- Replaced with proper SQL: `DELETE FROM person_fts WHERE person_handle = ?1`
+- All 7 E2E tests now pass successfully:
+  - ✅ test_homepage_returns_200 (fixed in previous session)
+  - ✅ test_person_list_empty
+  - ✅ test_create_and_get_person
+  - ✅ test_update_person (fixed in this session)
+  - ✅ test_delete_person (was already passing after previous fixes)
+  - ✅ test_get_nonexistent_person_returns_404
+  - ✅ test_static_js_asset
+- Group C verification commands all pass
+- Committed changes with message: "fix: FTS5 delete in person update — all e2e tests passing"
+
+**Obstacles Encountered:**
+1. **FTS5 DELETE syntax confusion**: The initial implementation tried to use FTS5's special 'delete' command via INSERT statement, which requires a rowid parameter. This is more complex than needed for our use case. The standard SQL DELETE statement works perfectly with FTS5 tables when using indexed column lookups (person_handle).
+
+2. **Root cause of test_update_person failure**: The incorrect FTS5 delete syntax was causing the entire update operation to return None when `.ok()?` propagated the error. Once fixed with the proper DELETE statement, the update completes successfully and returns the updated Person record.
+
+**Out-of-Scope Observations:**
+- The E2E test suite design is robust - it caught a subtle FTS5 API usage error that would have caused silent failures in production
+- The tests appropriately mix HTTP and Candid calls: HTTP for read-only operations (GET) and Candid for mutations (create/update/delete), which aligns with ICP's query vs update call model
+- FTS5 is powerful but has quirks - the 'delete' command syntax is different from regular SQL and requires careful reading of SQLite documentation
+- Consider adding database-layer unit tests that don't require PocketIC to catch these SQL errors earlier in the development cycle
+- The fact that test_delete_person was already passing after Session 2's fixes suggests the FTS5 issue was specific to the UPDATE code path
+
+**Build Status:**
+✅ `pnpm run build` - frontend builds successfully
+✅ `cargo build -p server --target wasm32-wasip1 --release` - 0 errors (4 warnings about unused code)
+✅ `wasi2ic` conversion - successful
+✅ `cargo test -p e2e-tests` - 7 passed; 0 failed
+
+**Group C Status:**
+✅ All tasks completed
+✅ All verification commands pass
+✅ Committed to git
