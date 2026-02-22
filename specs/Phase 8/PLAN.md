@@ -88,3 +88,30 @@ dfx stop
 ```
 
 When done, run: `openclaw system event --text "Done: icp-gramps Phase 8 complete — compiles and tests pass" --mode now`
+
+---
+
+### Group C: Fix 3 failing E2E tests
+
+**Context on failures:**
+1. `test_homepage_returns_200` returns 503 — IC returns 503 when a response isn't properly certified. The `index.rs` GET handler serves `index.html` manually but it's not certified by ic-asset-router. Fix: remove the manual route handler and let `with_assets()` serve `index.html` automatically from `DIST_DIR`. ic-asset-router certifies all files in the dir including index.html.
+
+2. `test_update_person` returns 404 on PUT — PUT/DELETE are **mutating** HTTP methods. On ICP these must go through `http_request_update` (an update call), not `http_request` (a query call). The gateway should auto-upgrade, but only if `http_request` returns `upgrade: Some(true)` in the response. Check if ic-asset-router handles this automatically for non-GET routes — if not, the route may simply not be reachable via HTTP at all. Alternative: move person mutation to Candid-only and remove PUT/DELETE HTTP routes from the test assertions, OR verify upgrade works.
+
+3. `test_delete_person` — same root cause as #2 (DELETE is a mutating method).
+
+**Tasks:**
+- [ ] Fix homepage 503: remove manual `routes/index.rs` GET handler (or make it a fallback that returns `upgrade: Some(true)` for the gateway). Let ic-asset-router serve index.html from DIST_DIR directly. Check ic-asset-router docs for how to configure a fallback/SPA handler for unmatched routes.
+- [ ] Fix PUT/DELETE routes: check ic-asset-router 0.1.1 source for whether update methods are supported in HTTP routes. If yes, verify `http_request_update` correctly routes them. If ic-asset-router doesn't support mutating HTTP routes, update the e2e tests to use Candid calls instead of HTTP for update/delete.
+- [ ] Run `cargo test -p e2e-tests` — all 7 tests must pass (or adjust tests to match correct behaviour if mutating HTTP routes aren't supported).
+
+**Verification:**
+```bash
+source ~/.cargo/env && source ~/.local/share/dfx/env
+pnpm run build
+cargo build -p server --target wasm32-wasip1 --release
+wasi2ic target/wasm32-wasip1/release/server.wasm target/wasm32-wasip1/release/server_wasi2ic.wasm
+cargo test -p e2e-tests 2>&1
+```
+
+When done, run: `openclaw system event --text "Done: icp-gramps Phase 8 Group C — all tests passing" --mode now`
