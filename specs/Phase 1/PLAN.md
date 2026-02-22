@@ -22,19 +22,19 @@ Rationale:
 
 **Tasks:**
 
-- [ ] Create `dfx.json` (see spec for exact content)
-- [ ] Create workspace `Cargo.toml`
-- [ ] Create `server/` directory tree: `src/lib.rs`, `src/db/mod.rs`, `src/routes/mod.rs`, `src/routes/index.rs`, `src/migrations/`
-- [ ] Create `server/Cargo.toml` with correct dependencies (check crates.io for latest versions of ic-asset-router, ic-rusqlite, ic-sql-migrate)
-- [ ] Create `server/build.rs`
-- [ ] Create `server/server.did`
-- [ ] Create `package.json`
-- [ ] Create `vite.config.ts`
-- [ ] Create `tsconfig.json`
-- [ ] Create `tailwind.config.ts`
-- [ ] Create `postcss.config.js`
-- [ ] Create `index.html`
-- [ ] Create `.gitignore` (node_modules, dist, target, .dfx, .env, Cargo.lock should NOT be ignored for workspace)
+- [x] Create `dfx.json` (see spec for exact content)
+- [x] Create workspace `Cargo.toml`
+- [x] Create `server/` directory tree: `src/lib.rs`, `src/db/mod.rs`, `src/routes/mod.rs`, `src/routes/index.rs`, `src/migrations/`
+- [x] Create `server/Cargo.toml` with correct dependencies (check crates.io for latest versions of ic-asset-router, ic-rusqlite, ic-sql-migrate)
+- [x] Create `server/build.rs`
+- [x] Create `server/server.did`
+- [x] Create `package.json`
+- [x] Create `vite.config.ts`
+- [x] Create `tsconfig.json`
+- [x] Create `tailwind.config.ts`
+- [x] Create `postcss.config.js`
+- [x] Create `index.html`
+- [x] Create `.gitignore` (node_modules, dist, target, .dfx, .env, Cargo.lock should NOT be ignored for workspace)
 
 **Verification:**
 ```bash

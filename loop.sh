@@ -27,6 +27,14 @@ if [ ! -f "$PROMPT_FILE" ]; then
   exit 1
 fi
 
+# Load secrets (for API keys)
+if [ -f "/home/kristofer/.openclaw/workspace/.secrets/email.env" ]; then
+  set -a
+  source "/home/kristofer/.openclaw/workspace/.secrets/email.env"
+  set +a
+  export ANTHROPIC_API_KEY="${OPENCODE_API_KEY:-$ANTHROPIC_API_KEY}"
+fi
+
 # Header
 echo ""
 echo "  prompt   $PROMPT_FILE"
@@ -54,7 +62,7 @@ while true; do
   fi
   echo ""
 
-  cat "$PROMPT_FILE" | opencode run --model anthropic/claude-opus-4-6
+  cat "$PROMPT_FILE" | opencode run --model anthropic/claude-sonnet-4-5
 
   git push origin "$BRANCH" 2>/dev/null || git push -u origin "$BRANCH"
 
