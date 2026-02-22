@@ -27,10 +27,10 @@ Each iteration: agent reads `PLAN.md`, finds the next incomplete spec group, imp
 | Phase | Focus | Status |
 |-------|-------|--------|
 | [Phase 1](specs/Phase%201/PLAN.md) | **Bootstrap** — project scaffold, migrations, ic-asset-router wiring, React skeleton | 🔲 |
-| Phase 2 | **Person Backend** — Person CRUD via Candid API + HTTP JSON routes | 🔲 |
-| Phase 3 | **Person Frontend** — Person list, detail, add/edit forms | 🔲 |
-| Phase 4 | **Events** — Birth/death events linked to persons | 🔲 |
-| Phase 5 | **Families** — Father/mother/children relationships | 🔲 |
-| Phase 6 | **Places** — Geographic locations linked to events | 🔲 |
-| Phase 7 | **Search** — Full-text search (FTS5) across persons | 🔲 |
-| Phase 8 | **Pedigree Chart** — Ancestor tree visualization | 🔲 |
+| Phase 2 | **Person Backend** | ✅ |
+| Phase 3 | **Person Frontend** | ✅ |
+| Phase 4 | **Events** | ✅ |
+| Phase 5 | **Families** | ✅ |
+| Phase 6 | **Places** | ✅ |
+| Phase 7 | **Search** | ✅ |
+| Phase 8 | **Pedigree Chart** | 🔲 |
