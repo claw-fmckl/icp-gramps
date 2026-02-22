@@ -29,3 +29,33 @@
 **Commit:** 331ee06 - "feat: implement Spec 1.1 - Project Scaffold"
 
 **Status:** Group A (Spec 1.1) COMPLETE ✓
+
+## Session 2: Spec 1.4 — React Frontend Skeleton
+
+**Date:** 2026-02-22
+
+**Accomplished:**
+- Created complete React application structure with TanStack Router
+- Implemented src/main.tsx with router configuration and type declarations
+- Created src/index.css with Tailwind CSS imports
+- Created src/vite-env.d.ts for Vite type definitions
+- Implemented src/routes/__root.tsx with layout, navigation bar displaying "🌳 icp-gramps"
+- Implemented src/routes/index.tsx with home page showing "Welcome to icp-gramps" and three stat cards (Persons, Families, Events - all showing count 0)
+- Successfully ran pnpm install to generate pnpm-lock.yaml
+- All 6 tasks from Group B completed successfully
+- Both verification commands passed: pnpm run build produces dist/index.html, tsc --noEmit passes with no errors
+
+**Obstacles encountered:**
+- Missing dependency: @vitejs/plugin-react was referenced in vite.config.ts but not listed in package.json devDependencies
+  - Resolution: Added @vitejs/plugin-react as a dev dependency via pnpm
+- Initial build failed because TanStack Router's routeTree.gen.ts wasn't generated before TypeScript compilation
+  - Resolution: The TanStackRouterVite plugin automatically generates routeTree.gen.ts during vite build, and subsequent builds succeed
+
+**Out-of-scope observations:**
+- The spec's package.json devDependencies list doesn't include @vitejs/plugin-react, but vite.config.ts imports and uses it
+- TanStack Router generates routeTree.gen.ts automatically, which is tracked in git (not in .gitignore)
+- The build process works correctly once the route tree is generated on first run
+
+**Commit:** b4615b1 - "feat: implement Spec 1.4 - React Frontend Skeleton"
+
+**Status:** Group B (Spec 1.4) COMPLETE ✓
