@@ -51,11 +51,11 @@ echo "WASM built OK"
 
 **Tasks:**
 
-- [ ] Add `tests/e2e` to workspace members in root `Cargo.toml`
-- [ ] Create `tests/e2e/Cargo.toml` with pocket-ic, reqwest, serde_json dev-dependencies
-- [ ] Create `tests/e2e/build.rs`
-- [ ] Create `tests/e2e/src/lib.rs` with full test suite (see spec)
-- [ ] Run `cargo test -p e2e-tests 2>&1` — all 6 tests must pass
+- [x] Add `tests/e2e` to workspace members in root `Cargo.toml`
+- [x] Create `tests/e2e/Cargo.toml` with pocket-ic, reqwest, serde_json dev-dependencies
+- [x] Create `tests/e2e/build.rs`
+- [x] Create `tests/e2e/src/lib.rs` with full test suite (see spec)
+- [!] Run `cargo test -p e2e-tests 2>&1` — all 6 tests must pass
 
 **Verification:**
 ```bash

@@ -2,8 +2,8 @@ use crate::db;
 use ic_asset_router::{HttpResponse, RouteContext, StatusCode};
 use std::borrow::Cow;
 
-pub fn get(ctx: RouteContext<()>) -> HttpResponse<'static> {
-    let handle = ctx.params.get("handle").unwrap_or("");
+pub fn get(ctx: RouteContext<super::Params>) -> HttpResponse<'static> {
+    let handle = &ctx.params.handle;
 
     match db::person::Person::get(handle) {
         Some(person) => {
@@ -23,13 +23,13 @@ pub fn get(ctx: RouteContext<()>) -> HttpResponse<'static> {
                 "content-type".to_string(),
                 "application/json".to_string(),
             )])
-            .with_body(Cow::Borrowed(b"{\"error\":\"Person not found\"}"))
+            .with_body(b"{\"error\":\"Person not found\"}" as &[u8])
             .build(),
     }
 }
 
-pub fn put(ctx: RouteContext<()>) -> HttpResponse<'static> {
-    let handle = ctx.params.get("handle").unwrap_or("");
+pub fn put(ctx: RouteContext<super::Params>) -> HttpResponse<'static> {
+    let handle = &ctx.params.handle;
 
     let input: db::person::PersonInput = match ctx.json() {
         Ok(input) => input,
@@ -40,7 +40,7 @@ pub fn put(ctx: RouteContext<()>) -> HttpResponse<'static> {
                     "content-type".to_string(),
                     "application/json".to_string(),
                 )])
-                .with_body(Cow::Borrowed(b"{\"error\":\"Invalid JSON\"}"))
+                .with_body(b"{\"error\":\"Invalid JSON\"}" as &[u8])
                 .build();
         }
     };
@@ -63,13 +63,13 @@ pub fn put(ctx: RouteContext<()>) -> HttpResponse<'static> {
                 "content-type".to_string(),
                 "application/json".to_string(),
             )])
-            .with_body(Cow::Borrowed(b"{\"error\":\"Person not found\"}"))
+            .with_body(b"{\"error\":\"Person not found\"}" as &[u8])
             .build(),
     }
 }
 
-pub fn delete(ctx: RouteContext<()>) -> HttpResponse<'static> {
-    let handle = ctx.params.get("handle").unwrap_or("");
+pub fn delete(ctx: RouteContext<super::Params>) -> HttpResponse<'static> {
+    let handle = &ctx.params.handle;
 
     if db::person::Person::delete(handle) {
         HttpResponse::builder()
@@ -78,7 +78,7 @@ pub fn delete(ctx: RouteContext<()>) -> HttpResponse<'static> {
                 "content-type".to_string(),
                 "application/json".to_string(),
             )])
-            .with_body(Cow::Borrowed(b"{\"success\":true}"))
+            .with_body(b"{\"success\":true}" as &[u8])
             .build()
     } else {
         HttpResponse::builder()
@@ -87,7 +87,7 @@ pub fn delete(ctx: RouteContext<()>) -> HttpResponse<'static> {
                 "content-type".to_string(),
                 "application/json".to_string(),
             )])
-            .with_body(Cow::Borrowed(b"{\"error\":\"Person not found\"}"))
+            .with_body(b"{\"error\":\"Person not found\"}" as &[u8])
             .build()
     }
 }

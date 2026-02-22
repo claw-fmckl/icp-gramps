@@ -124,7 +124,32 @@ impl Person {
             )
             .ok()?;
 
-            Person::get(handle)
+            // Fetch the created person directly (don't call Person::get to avoid nested with_connection)
+            conn.query_row(
+                "SELECT handle, gramps_id, gender, given_names, call_name, surname,
+                        suffix, title_text, birth_ref_handle, death_ref_handle,
+                        private, change_date, created_at
+                 FROM person WHERE handle = ?1",
+                [handle],
+                |row| {
+                    Ok(Person {
+                        handle: row.get(0)?,
+                        gramps_id: row.get(1)?,
+                        gender: row.get(2)?,
+                        given_names: row.get(3)?,
+                        call_name: row.get(4)?,
+                        surname: row.get(5)?,
+                        suffix: row.get(6)?,
+                        title_text: row.get(7)?,
+                        birth_ref_handle: row.get(8)?,
+                        death_ref_handle: row.get(9)?,
+                        private: row.get::<_, i64>(10)? != 0,
+                        change_date: row.get(11)?,
+                        created_at: row.get(12)?,
+                    })
+                },
+            )
+            .ok()
         })
     }
 
@@ -164,7 +189,32 @@ impl Person {
             )
             .ok()?;
 
-            Person::get(handle)
+            // Fetch the updated person directly (don't call Person::get to avoid nested with_connection)
+            conn.query_row(
+                "SELECT handle, gramps_id, gender, given_names, call_name, surname,
+                        suffix, title_text, birth_ref_handle, death_ref_handle,
+                        private, change_date, created_at
+                 FROM person WHERE handle = ?1",
+                [handle],
+                |row| {
+                    Ok(Person {
+                        handle: row.get(0)?,
+                        gramps_id: row.get(1)?,
+                        gender: row.get(2)?,
+                        given_names: row.get(3)?,
+                        call_name: row.get(4)?,
+                        surname: row.get(5)?,
+                        suffix: row.get(6)?,
+                        title_text: row.get(7)?,
+                        birth_ref_handle: row.get(8)?,
+                        death_ref_handle: row.get(9)?,
+                        private: row.get::<_, i64>(10)? != 0,
+                        change_date: row.get(11)?,
+                        created_at: row.get(12)?,
+                    })
+                },
+            )
+            .ok()
         })
     }
 
@@ -277,7 +327,30 @@ pub fn get_birth_event(person_handle: &str) -> Option<super::event::Event> {
                 |row| row.get(0),
             )
             .ok()?;
-        super::event::Event::get(&event_handle)
+
+        // Fetch event directly instead of calling Event::get to avoid nested with_connection
+        conn.query_row(
+            "SELECT handle, gramps_id, event_type, place_handle, place_text, date_sortval,
+                    date_text, description, private, change_date, created_at
+             FROM event WHERE handle = ?1",
+            [event_handle],
+            |row| {
+                Ok(super::event::Event {
+                    handle: row.get(0)?,
+                    gramps_id: row.get(1)?,
+                    event_type: row.get(2)?,
+                    place_handle: row.get(3)?,
+                    place_text: row.get(4)?,
+                    date_sortval: row.get(5)?,
+                    date_text: row.get(6)?,
+                    description: row.get(7)?,
+                    private: row.get::<_, i64>(8)? != 0,
+                    change_date: row.get(9)?,
+                    created_at: row.get(10)?,
+                })
+            },
+        )
+        .ok()
     })
 }
 
@@ -291,6 +364,29 @@ pub fn get_death_event(person_handle: &str) -> Option<super::event::Event> {
                 |row| row.get(0),
             )
             .ok()?;
-        super::event::Event::get(&event_handle)
+
+        // Fetch event directly instead of calling Event::get to avoid nested with_connection
+        conn.query_row(
+            "SELECT handle, gramps_id, event_type, place_handle, place_text, date_sortval,
+                    date_text, description, private, change_date, created_at
+             FROM event WHERE handle = ?1",
+            [event_handle],
+            |row| {
+                Ok(super::event::Event {
+                    handle: row.get(0)?,
+                    gramps_id: row.get(1)?,
+                    event_type: row.get(2)?,
+                    place_handle: row.get(3)?,
+                    place_text: row.get(4)?,
+                    date_sortval: row.get(5)?,
+                    date_text: row.get(6)?,
+                    description: row.get(7)?,
+                    private: row.get::<_, i64>(8)? != 0,
+                    change_date: row.get(9)?,
+                    created_at: row.get(10)?,
+                })
+            },
+        )
+        .ok()
     })
 }

@@ -17,7 +17,7 @@ pub fn get(_ctx: RouteContext<()>) -> HttpResponse<'static> {
         .build()
 }
 
-pub async fn post(ctx: RouteContext<()>) -> HttpResponse<'static> {
+pub fn post(ctx: RouteContext<()>) -> HttpResponse<'static> {
     let input: db::person::PersonInput = match ctx.json() {
         Ok(input) => input,
         Err(_) => {
@@ -27,19 +27,19 @@ pub async fn post(ctx: RouteContext<()>) -> HttpResponse<'static> {
                     "content-type".to_string(),
                     "application/json".to_string(),
                 )])
-                .with_body(Cow::Borrowed(b"{\"error\":\"Invalid JSON\"}"))
+                .with_body(b"{\"error\":\"Invalid JSON\"}" as &[u8])
                 .build();
         }
     };
 
-    let handle = db::new_handle().await;
+    let handle = db::sync_new_handle();
     let gramps_id = with_connection(|conn| db::next_gramps_id(conn, "person"));
 
     match db::person::Person::create(&handle, &gramps_id, &input) {
         Some(person) => {
             let json = serde_json::to_vec(&person).unwrap_or_default();
             HttpResponse::builder()
-                .with_status_code(StatusCode::OK)
+                .with_status_code(StatusCode::CREATED)
                 .with_headers(vec![(
                     "content-type".to_string(),
                     "application/json".to_string(),
@@ -53,7 +53,7 @@ pub async fn post(ctx: RouteContext<()>) -> HttpResponse<'static> {
                 "content-type".to_string(),
                 "application/json".to_string(),
             )])
-            .with_body(Cow::Borrowed(b"{\"error\":\"Failed to create person\"}"))
+            .with_body(b"{\"error\":\"Failed to create person\"}" as &[u8])
             .build(),
     }
 }

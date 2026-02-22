@@ -2,7 +2,7 @@ use ic_asset_router::{HttpResponse, RouteContext, StatusCode};
 use std::borrow::Cow;
 
 pub fn get(_ctx: RouteContext<()>) -> HttpResponse<'static> {
-    let html = include_str!("../../dist/index.html");
+    let html = include_str!(concat!(env!("CARGO_MANIFEST_DIR"), "/../dist/index.html"));
     HttpResponse::builder()
         .with_status_code(StatusCode::OK)
         .with_headers(vec![(

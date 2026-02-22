@@ -48,7 +48,30 @@ impl Place {
                 ),
             )
             .ok()?;
-            Place::get(handle)
+
+            // Fetch the created place directly (don't call Place::get to avoid nested with_connection)
+            conn.query_row(
+                "SELECT handle, gramps_id, title, name, place_type, latitude,
+                        longitude, code, private, change_date, created_at
+                 FROM place WHERE handle = ?1",
+                [handle],
+                |row| {
+                    Ok(Place {
+                        handle: row.get(0)?,
+                        gramps_id: row.get(1)?,
+                        title: row.get(2)?,
+                        name: row.get(3)?,
+                        place_type: row.get(4)?,
+                        latitude: row.get(5)?,
+                        longitude: row.get(6)?,
+                        code: row.get(7)?,
+                        private: row.get::<_, i64>(8)? != 0,
+                        change_date: row.get(9)?,
+                        created_at: row.get(10)?,
+                    })
+                },
+            )
+            .ok()
         })
     }
 
@@ -129,7 +152,30 @@ impl Place {
                 ),
             )
             .ok()?;
-            Place::get(handle)
+
+            // Fetch the updated place directly (don't call Place::get to avoid nested with_connection)
+            conn.query_row(
+                "SELECT handle, gramps_id, title, name, place_type, latitude,
+                        longitude, code, private, change_date, created_at
+                 FROM place WHERE handle = ?1",
+                [handle],
+                |row| {
+                    Ok(Place {
+                        handle: row.get(0)?,
+                        gramps_id: row.get(1)?,
+                        title: row.get(2)?,
+                        name: row.get(3)?,
+                        place_type: row.get(4)?,
+                        latitude: row.get(5)?,
+                        longitude: row.get(6)?,
+                        code: row.get(7)?,
+                        private: row.get::<_, i64>(8)? != 0,
+                        change_date: row.get(9)?,
+                        created_at: row.get(10)?,
+                    })
+                },
+            )
+            .ok()
         })
     }
 

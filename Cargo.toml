@@ -1,5 +1,5 @@
 [workspace]
-members = ["server"]
+members = ["server", "tests/e2e"]
 resolver = "2"
 
 [profile.release]

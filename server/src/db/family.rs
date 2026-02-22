@@ -98,7 +98,27 @@ impl Family {
                 ),
             )
             .ok()?;
-            Family::get(handle)
+
+            // Fetch the created family directly (don't call Family::get to avoid nested with_connection)
+            conn.query_row(
+                "SELECT handle, gramps_id, father_handle, mother_handle, family_type,
+                        private, change_date, created_at
+                 FROM family WHERE handle = ?1",
+                [handle],
+                |row| {
+                    Ok(Family {
+                        handle: row.get(0)?,
+                        gramps_id: row.get(1)?,
+                        father_handle: row.get(2)?,
+                        mother_handle: row.get(3)?,
+                        family_type: row.get(4)?,
+                        private: row.get::<_, i64>(5)? != 0,
+                        change_date: row.get(6)?,
+                        created_at: row.get(7)?,
+                    })
+                },
+            )
+            .ok()
         })
     }
 
@@ -117,7 +137,27 @@ impl Family {
                 ),
             )
             .ok()?;
-            Family::get(handle)
+
+            // Fetch the updated family directly (don't call Family::get to avoid nested with_connection)
+            conn.query_row(
+                "SELECT handle, gramps_id, father_handle, mother_handle, family_type,
+                        private, change_date, created_at
+                 FROM family WHERE handle = ?1",
+                [handle],
+                |row| {
+                    Ok(Family {
+                        handle: row.get(0)?,
+                        gramps_id: row.get(1)?,
+                        father_handle: row.get(2)?,
+                        mother_handle: row.get(3)?,
+                        family_type: row.get(4)?,
+                        private: row.get::<_, i64>(5)? != 0,
+                        change_date: row.get(6)?,
+                        created_at: row.get(7)?,
+                    })
+                },
+            )
+            .ok()
         })
     }
 

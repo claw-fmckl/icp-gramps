@@ -48,7 +48,30 @@ impl Event {
                 ),
             )
             .ok()?;
-            Event::get(handle)
+
+            // Fetch the created event directly (don't call Event::get to avoid nested with_connection)
+            conn.query_row(
+                "SELECT handle, gramps_id, event_type, place_handle, place_text, date_sortval,
+                        date_text, description, private, change_date, created_at
+                 FROM event WHERE handle = ?1",
+                [handle],
+                |row| {
+                    Ok(Event {
+                        handle: row.get(0)?,
+                        gramps_id: row.get(1)?,
+                        event_type: row.get(2)?,
+                        place_handle: row.get(3)?,
+                        place_text: row.get(4)?,
+                        date_sortval: row.get(5)?,
+                        date_text: row.get(6)?,
+                        description: row.get(7)?,
+                        private: row.get::<_, i64>(8)? != 0,
+                        change_date: row.get(9)?,
+                        created_at: row.get(10)?,
+                    })
+                },
+            )
+            .ok()
         })
     }
 
@@ -98,7 +121,30 @@ impl Event {
                 ),
             )
             .ok()?;
-            Event::get(handle)
+
+            // Fetch the updated event directly (don't call Event::get to avoid nested with_connection)
+            conn.query_row(
+                "SELECT handle, gramps_id, event_type, place_handle, place_text, date_sortval,
+                        date_text, description, private, change_date, created_at
+                 FROM event WHERE handle = ?1",
+                [handle],
+                |row| {
+                    Ok(Event {
+                        handle: row.get(0)?,
+                        gramps_id: row.get(1)?,
+                        event_type: row.get(2)?,
+                        place_handle: row.get(3)?,
+                        place_text: row.get(4)?,
+                        date_sortval: row.get(5)?,
+                        date_text: row.get(6)?,
+                        description: row.get(7)?,
+                        private: row.get::<_, i64>(8)? != 0,
+                        change_date: row.get(9)?,
+                        created_at: row.get(10)?,
+                    })
+                },
+            )
+            .ok()
         })
     }
 
