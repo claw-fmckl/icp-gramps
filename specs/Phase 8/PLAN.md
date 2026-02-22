@@ -102,8 +102,8 @@ When done, run: `openclaw system event --text "Done: icp-gramps Phase 8 complete
 
 **Tasks:**
 - [x] Fix homepage 503: remove manual `routes/index.rs` GET handler (or make it a fallback that returns `upgrade: Some(true)` for the gateway). Let ic-asset-router serve index.html from DIST_DIR directly. Check ic-asset-router docs for how to configure a fallback/SPA handler for unmatched routes.
-- [ ] Fix PUT/DELETE routes: check ic-asset-router 0.1.1 source for whether update methods are supported in HTTP routes. If yes, verify `http_request_update` correctly routes them. If ic-asset-router doesn't support mutating HTTP routes, update the e2e tests to use Candid calls instead of HTTP for update/delete.
-- [ ] Run `cargo test -p e2e-tests` — all 7 tests must pass (or adjust tests to match correct behaviour if mutating HTTP routes aren't supported).
+- [x] Fix PUT/DELETE routes: check ic-asset-router 0.1.1 source for whether update methods are supported in HTTP routes. If yes, verify `http_request_update` correctly routes them. If ic-asset-router doesn't support mutating HTTP routes, update the e2e tests to use Candid calls instead of HTTP for update/delete.
+- [x] Run `cargo test -p e2e-tests` — all 7 tests must pass (or adjust tests to match correct behaviour if mutating HTTP routes aren't supported).
 
 **Verification:**
 ```bash

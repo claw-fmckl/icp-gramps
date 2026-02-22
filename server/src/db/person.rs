@@ -174,11 +174,8 @@ impl Person {
             .ok()?;
 
             // Update FTS5 index (delete + reinsert)
-            conn.execute(
-                "INSERT INTO person_fts(person_fts, person_handle, full_name) VALUES ('delete', ?1, '')",
-                (handle,),
-            )
-            .ok()?;
+            conn.execute("DELETE FROM person_fts WHERE person_handle = ?1", (handle,))
+                .ok()?;
 
             let full_name = format!("{} {}", input.given_names, input.surname)
                 .trim()
