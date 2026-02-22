@@ -9,6 +9,9 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@dfinity/agent": "latest",
+    "@dfinity/candid": "latest",
+    "@dfinity/principal": "latest",
     "@tanstack/react-router": "latest",
     "react": "^19",
     "react-dom": "^19"

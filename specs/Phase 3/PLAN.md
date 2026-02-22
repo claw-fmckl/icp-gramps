@@ -20,18 +20,18 @@
 
 **Tasks:**
 
-- [ ] Add `@dfinity/agent`, `@dfinity/candid`, `@dfinity/principal` to package.json and run `pnpm install`
-- [ ] Create `src/declarations/` directory with canister type declarations (based on server.did)
-- [ ] Create `src/hooks/useActor.ts` — returns typed IC actor using the canister ID env var
-- [ ] Create `src/components/GenderIcon.tsx` — renders ♂/♀/? for gender int (1=♂, 2=♀, else=?)
-- [ ] Create `src/components/PersonName.tsx` — formats full name: title + given + surname + suffix
-- [ ] Create `src/components/LoadingSpinner.tsx` — simple spinner div
-- [ ] Create `src/routes/persons/index.tsx` — person list page (fetch list_persons, table with Name/Gender/Actions, empty state, "Add person" button)
-- [ ] Create `src/routes/persons/new.tsx` — add person form (given_names, surname, gender select, call_name, title_text, suffix, private checkbox; submit calls create_person; on success navigate to /persons/$handle)
-- [ ] Create `src/routes/persons/$handle.tsx` — person detail page (fetch get_person, display all fields, Edit/Delete buttons, delete with confirm dialog)
-- [ ] Create `src/routes/persons/$handle.edit.tsx` — edit person form (same fields as new, pre-populated; submit calls update_person)
-- [ ] Update `src/routes/__root.tsx` nav to include a "Persons" link to `/persons`
-- [ ] Verify: `pnpm run build` passes, `tsc --noEmit` passes
+- [x] Add `@dfinity/agent`, `@dfinity/candid`, `@dfinity/principal` to package.json and run `pnpm install`
+- [x] Create `src/declarations/` directory with canister type declarations (based on server.did)
+- [x] Create `src/hooks/useActor.ts` — returns typed IC actor using the canister ID env var
+- [x] Create `src/components/GenderIcon.tsx` — renders ♂/♀/? for gender int (1=♂, 2=♀, else=?)
+- [x] Create `src/components/PersonName.tsx` — formats full name: title + given + surname + suffix
+- [x] Create `src/components/LoadingSpinner.tsx` — simple spinner div
+- [x] Create `src/routes/persons/index.tsx` — person list page (fetch list_persons, table with Name/Gender/Actions, empty state, "Add person" button)
+- [x] Create `src/routes/persons/new.tsx` — add person form (given_names, surname, gender select, call_name, title_text, suffix, private checkbox; submit calls create_person; on success navigate to /persons/$handle)
+- [x] Create `src/routes/persons/$handle.tsx` — person detail page (fetch get_person, display all fields, Edit/Delete buttons, delete with confirm dialog)
+- [x] Create `src/routes/persons/$handle.edit.tsx` — edit person form (same fields as new, pre-populated; submit calls update_person)
+- [x] Update `src/routes/__root.tsx` nav to include a "Persons" link to `/persons`
+- [x] Verify: `pnpm run build` passes, `tsc --noEmit` passes
 
 **Verification:**
 ```bash

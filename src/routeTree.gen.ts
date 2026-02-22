@@ -10,33 +10,88 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as PersonsIndexRouteImport } from './routes/persons/index'
+import { Route as PersonsNewRouteImport } from './routes/persons/new'
+import { Route as PersonsHandleRouteImport } from './routes/persons/$handle'
+import { Route as PersonsHandleEditRouteImport } from './routes/persons/$handle.edit'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PersonsIndexRoute = PersonsIndexRouteImport.update({
+  id: '/persons/',
+  path: '/persons/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PersonsNewRoute = PersonsNewRouteImport.update({
+  id: '/persons/new',
+  path: '/persons/new',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PersonsHandleRoute = PersonsHandleRouteImport.update({
+  id: '/persons/$handle',
+  path: '/persons/$handle',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PersonsHandleEditRoute = PersonsHandleEditRouteImport.update({
+  id: '/edit',
+  path: '/edit',
+  getParentRoute: () => PersonsHandleRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/persons/$handle': typeof PersonsHandleRouteWithChildren
+  '/persons/new': typeof PersonsNewRoute
+  '/persons/': typeof PersonsIndexRoute
+  '/persons/$handle/edit': typeof PersonsHandleEditRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/persons/$handle': typeof PersonsHandleRouteWithChildren
+  '/persons/new': typeof PersonsNewRoute
+  '/persons': typeof PersonsIndexRoute
+  '/persons/$handle/edit': typeof PersonsHandleEditRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/persons/$handle': typeof PersonsHandleRouteWithChildren
+  '/persons/new': typeof PersonsNewRoute
+  '/persons/': typeof PersonsIndexRoute
+  '/persons/$handle/edit': typeof PersonsHandleEditRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/persons/$handle'
+    | '/persons/new'
+    | '/persons/'
+    | '/persons/$handle/edit'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/persons/$handle'
+    | '/persons/new'
+    | '/persons'
+    | '/persons/$handle/edit'
+  id:
+    | '__root__'
+    | '/'
+    | '/persons/$handle'
+    | '/persons/new'
+    | '/persons/'
+    | '/persons/$handle/edit'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  PersonsHandleRoute: typeof PersonsHandleRouteWithChildren
+  PersonsNewRoute: typeof PersonsNewRoute
+  PersonsIndexRoute: typeof PersonsIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +103,54 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/persons/': {
+      id: '/persons/'
+      path: '/persons'
+      fullPath: '/persons/'
+      preLoaderRoute: typeof PersonsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/persons/new': {
+      id: '/persons/new'
+      path: '/persons/new'
+      fullPath: '/persons/new'
+      preLoaderRoute: typeof PersonsNewRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/persons/$handle': {
+      id: '/persons/$handle'
+      path: '/persons/$handle'
+      fullPath: '/persons/$handle'
+      preLoaderRoute: typeof PersonsHandleRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/persons/$handle/edit': {
+      id: '/persons/$handle/edit'
+      path: '/edit'
+      fullPath: '/persons/$handle/edit'
+      preLoaderRoute: typeof PersonsHandleEditRouteImport
+      parentRoute: typeof PersonsHandleRoute
+    }
   }
 }
 
+interface PersonsHandleRouteChildren {
+  PersonsHandleEditRoute: typeof PersonsHandleEditRoute
+}
+
+const PersonsHandleRouteChildren: PersonsHandleRouteChildren = {
+  PersonsHandleEditRoute: PersonsHandleEditRoute,
+}
+
+const PersonsHandleRouteWithChildren = PersonsHandleRoute._addFileChildren(
+  PersonsHandleRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  PersonsHandleRoute: PersonsHandleRouteWithChildren,
+  PersonsNewRoute: PersonsNewRoute,
+  PersonsIndexRoute: PersonsIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
