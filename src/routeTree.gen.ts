@@ -11,8 +11,11 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as PersonsIndexRouteImport } from './routes/persons/index'
+import { Route as FamiliesIndexRouteImport } from './routes/families/index'
 import { Route as PersonsNewRouteImport } from './routes/persons/new'
 import { Route as PersonsHandleRouteImport } from './routes/persons/$handle'
+import { Route as FamiliesNewRouteImport } from './routes/families/new'
+import { Route as FamiliesHandleRouteImport } from './routes/families/$handle'
 import { Route as PersonsHandleEditRouteImport } from './routes/persons/$handle.edit'
 
 const IndexRoute = IndexRouteImport.update({
@@ -25,6 +28,11 @@ const PersonsIndexRoute = PersonsIndexRouteImport.update({
   path: '/persons/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const FamiliesIndexRoute = FamiliesIndexRouteImport.update({
+  id: '/families/',
+  path: '/families/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PersonsNewRoute = PersonsNewRouteImport.update({
   id: '/persons/new',
   path: '/persons/new',
@@ -35,6 +43,16 @@ const PersonsHandleRoute = PersonsHandleRouteImport.update({
   path: '/persons/$handle',
   getParentRoute: () => rootRouteImport,
 } as any)
+const FamiliesNewRoute = FamiliesNewRouteImport.update({
+  id: '/families/new',
+  path: '/families/new',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FamiliesHandleRoute = FamiliesHandleRouteImport.update({
+  id: '/families/$handle',
+  path: '/families/$handle',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PersonsHandleEditRoute = PersonsHandleEditRouteImport.update({
   id: '/edit',
   path: '/edit',
@@ -43,23 +61,32 @@ const PersonsHandleEditRoute = PersonsHandleEditRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/families/$handle': typeof FamiliesHandleRoute
+  '/families/new': typeof FamiliesNewRoute
   '/persons/$handle': typeof PersonsHandleRouteWithChildren
   '/persons/new': typeof PersonsNewRoute
+  '/families/': typeof FamiliesIndexRoute
   '/persons/': typeof PersonsIndexRoute
   '/persons/$handle/edit': typeof PersonsHandleEditRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/families/$handle': typeof FamiliesHandleRoute
+  '/families/new': typeof FamiliesNewRoute
   '/persons/$handle': typeof PersonsHandleRouteWithChildren
   '/persons/new': typeof PersonsNewRoute
+  '/families': typeof FamiliesIndexRoute
   '/persons': typeof PersonsIndexRoute
   '/persons/$handle/edit': typeof PersonsHandleEditRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/families/$handle': typeof FamiliesHandleRoute
+  '/families/new': typeof FamiliesNewRoute
   '/persons/$handle': typeof PersonsHandleRouteWithChildren
   '/persons/new': typeof PersonsNewRoute
+  '/families/': typeof FamiliesIndexRoute
   '/persons/': typeof PersonsIndexRoute
   '/persons/$handle/edit': typeof PersonsHandleEditRoute
 }
@@ -67,30 +94,42 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/families/$handle'
+    | '/families/new'
     | '/persons/$handle'
     | '/persons/new'
+    | '/families/'
     | '/persons/'
     | '/persons/$handle/edit'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/families/$handle'
+    | '/families/new'
     | '/persons/$handle'
     | '/persons/new'
+    | '/families'
     | '/persons'
     | '/persons/$handle/edit'
   id:
     | '__root__'
     | '/'
+    | '/families/$handle'
+    | '/families/new'
     | '/persons/$handle'
     | '/persons/new'
+    | '/families/'
     | '/persons/'
     | '/persons/$handle/edit'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  FamiliesHandleRoute: typeof FamiliesHandleRoute
+  FamiliesNewRoute: typeof FamiliesNewRoute
   PersonsHandleRoute: typeof PersonsHandleRouteWithChildren
   PersonsNewRoute: typeof PersonsNewRoute
+  FamiliesIndexRoute: typeof FamiliesIndexRoute
   PersonsIndexRoute: typeof PersonsIndexRoute
 }
 
@@ -110,6 +149,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PersonsIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/families/': {
+      id: '/families/'
+      path: '/families'
+      fullPath: '/families/'
+      preLoaderRoute: typeof FamiliesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/persons/new': {
       id: '/persons/new'
       path: '/persons/new'
@@ -122,6 +168,20 @@ declare module '@tanstack/react-router' {
       path: '/persons/$handle'
       fullPath: '/persons/$handle'
       preLoaderRoute: typeof PersonsHandleRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/families/new': {
+      id: '/families/new'
+      path: '/families/new'
+      fullPath: '/families/new'
+      preLoaderRoute: typeof FamiliesNewRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/families/$handle': {
+      id: '/families/$handle'
+      path: '/families/$handle'
+      fullPath: '/families/$handle'
+      preLoaderRoute: typeof FamiliesHandleRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/persons/$handle/edit': {
@@ -148,8 +208,11 @@ const PersonsHandleRouteWithChildren = PersonsHandleRoute._addFileChildren(
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  FamiliesHandleRoute: FamiliesHandleRoute,
+  FamiliesNewRoute: FamiliesNewRoute,
   PersonsHandleRoute: PersonsHandleRouteWithChildren,
   PersonsNewRoute: PersonsNewRoute,
+  FamiliesIndexRoute: FamiliesIndexRoute,
   PersonsIndexRoute: PersonsIndexRoute,
 }
 export const routeTree = rootRouteImport

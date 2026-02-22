@@ -46,6 +46,24 @@ export interface EventInput {
   private: boolean | null;
 }
 
+export interface Family {
+  handle: string;
+  gramps_id: string;
+  father_handle: string | null;
+  mother_handle: string | null;
+  family_type: string;
+  private: boolean;
+  change_date: bigint;
+  created_at: bigint;
+}
+
+export interface FamilyInput {
+  father_handle: string | null;
+  mother_handle: string | null;
+  family_type: string | null;
+  private: boolean | null;
+}
+
 export interface _SERVICE {
   list_persons: () => Promise<Person[]>;
   get_person: (handle: string) => Promise<Person | null>;
@@ -60,4 +78,14 @@ export interface _SERVICE {
   set_person_death: (person_handle: string, input: EventInput) => Promise<Event | null>;
   get_person_birth: (person_handle: string) => Promise<Event | null>;
   get_person_death: (person_handle: string) => Promise<Event | null>;
+  list_families: () => Promise<Family[]>;
+  get_family: (handle: string) => Promise<Family | null>;
+  create_family: (input: FamilyInput) => Promise<Family | null>;
+  update_family: (handle: string, input: FamilyInput) => Promise<Family | null>;
+  delete_family: (handle: string) => Promise<boolean>;
+  add_child_to_family: (family_handle: string, child_handle: string, father_rel: string, mother_rel: string) => Promise<boolean>;
+  remove_child_from_family: (family_handle: string, child_handle: string) => Promise<boolean>;
+  get_family_children: (family_handle: string) => Promise<Person[]>;
+  get_person_parent_families: (person_handle: string) => Promise<Family[]>;
+  get_person_own_families: (person_handle: string) => Promise<Family[]>;
 }

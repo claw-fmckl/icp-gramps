@@ -11,6 +11,9 @@ export const Route = createRootRoute({
           <a href="/persons" className="text-gray-600 hover:text-gray-900">
             Persons
           </a>
+          <a href="/families" className="text-gray-600 hover:text-gray-900">
+            Families
+          </a>
         </div>
       </nav>
       <main className="max-w-4xl mx-auto px-6 py-8">

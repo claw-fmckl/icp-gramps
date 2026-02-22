@@ -49,6 +49,24 @@ export const idlFactory: IDL.InterfaceFactory = ({ IDL }) => {
     private: IDL.Opt(IDL.Bool),
   });
 
+  const Family = IDL.Record({
+    handle: IDL.Text,
+    gramps_id: IDL.Text,
+    father_handle: IDL.Opt(IDL.Text),
+    mother_handle: IDL.Opt(IDL.Text),
+    family_type: IDL.Text,
+    private: IDL.Bool,
+    change_date: IDL.Int64,
+    created_at: IDL.Int64,
+  });
+
+  const FamilyInput = IDL.Record({
+    father_handle: IDL.Opt(IDL.Text),
+    mother_handle: IDL.Opt(IDL.Text),
+    family_type: IDL.Opt(IDL.Text),
+    private: IDL.Opt(IDL.Bool),
+  });
+
   return IDL.Service({
     http_request: IDL.Func(
       [
@@ -101,5 +119,15 @@ export const idlFactory: IDL.InterfaceFactory = ({ IDL }) => {
     set_person_death: IDL.Func([IDL.Text, EventInput], [IDL.Opt(Event)], []),
     get_person_birth: IDL.Func([IDL.Text], [IDL.Opt(Event)], ['query']),
     get_person_death: IDL.Func([IDL.Text], [IDL.Opt(Event)], ['query']),
+    list_families: IDL.Func([], [IDL.Vec(Family)], ['query']),
+    get_family: IDL.Func([IDL.Text], [IDL.Opt(Family)], ['query']),
+    create_family: IDL.Func([FamilyInput], [IDL.Opt(Family)], []),
+    update_family: IDL.Func([IDL.Text, FamilyInput], [IDL.Opt(Family)], []),
+    delete_family: IDL.Func([IDL.Text], [IDL.Bool], []),
+    add_child_to_family: IDL.Func([IDL.Text, IDL.Text, IDL.Text, IDL.Text], [IDL.Bool], []),
+    remove_child_from_family: IDL.Func([IDL.Text, IDL.Text], [IDL.Bool], []),
+    get_family_children: IDL.Func([IDL.Text], [IDL.Vec(Person)], ['query']),
+    get_person_parent_families: IDL.Func([IDL.Text], [IDL.Vec(Family)], ['query']),
+    get_person_own_families: IDL.Func([IDL.Text], [IDL.Vec(Family)], ['query']),
   });
 };

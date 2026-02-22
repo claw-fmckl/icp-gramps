@@ -1,6 +1,7 @@
 // Database helpers module — handle generation, gramps_id generation, common queries.
 
 pub mod event;
+pub mod family;
 pub mod person;
 
 use ic_cdk::api::time;

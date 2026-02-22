@@ -46,6 +46,24 @@ type EventInput = record {
   private : opt bool;
 };
 
+type Family = record {
+  handle : text;
+  gramps_id : text;
+  father_handle : opt text;
+  mother_handle : opt text;
+  family_type : text;
+  private : bool;
+  change_date : int64;
+  created_at : int64;
+};
+
+type FamilyInput = record {
+  father_handle : opt text;
+  mother_handle : opt text;
+  family_type : opt text;
+  private : opt bool;
+};
+
 service : {
   http_request : (record { url : text; method : text; headers : vec record { text; text }; body : vec nat8 }) -> (record { status_code : nat16; headers : vec record { text; text }; body : vec nat8; upgrade : opt bool }) query;
   http_request_update : (record { url : text; method : text; headers : vec record { text; text }; body : vec nat8 }) -> (record { status_code : nat16; headers : vec record { text; text }; body : vec nat8; upgrade : opt bool });
@@ -62,4 +80,14 @@ service : {
   set_person_death : (text, EventInput) -> (opt Event);
   get_person_birth : (text) -> (opt Event) query;
   get_person_death : (text) -> (opt Event) query;
+  list_families : () -> (vec Family) query;
+  get_family : (text) -> (opt Family) query;
+  create_family : (FamilyInput) -> (opt Family);
+  update_family : (text, FamilyInput) -> (opt Family);
+  delete_family : (text) -> (bool);
+  add_child_to_family : (text, text, text, text) -> (bool);
+  remove_child_from_family : (text, text) -> (bool);
+  get_family_children : (text) -> (vec Person) query;
+  get_person_parent_families : (text) -> (vec Family) query;
+  get_person_own_families : (text) -> (vec Family) query;
 };

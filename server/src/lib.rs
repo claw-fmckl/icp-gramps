@@ -144,3 +144,62 @@ fn get_person_birth(person_handle: String) -> Option<db::event::Event> {
 fn get_person_death(person_handle: String) -> Option<db::event::Event> {
     db::person::get_death_event(&person_handle)
 }
+
+// --- Family API ---
+
+#[query]
+fn list_families() -> Vec<db::family::Family> {
+    db::family::Family::list()
+}
+
+#[query]
+fn get_family(handle: String) -> Option<db::family::Family> {
+    db::family::Family::get(&handle)
+}
+
+#[update]
+async fn create_family(input: db::family::FamilyInput) -> Option<db::family::Family> {
+    let handle = db::new_handle().await;
+    let gramps_id = with_connection(|conn| db::next_gramps_id(conn, "family"));
+    db::family::Family::create(&handle, &gramps_id, &input)
+}
+
+#[update]
+fn update_family(handle: String, input: db::family::FamilyInput) -> Option<db::family::Family> {
+    db::family::Family::update(&handle, &input)
+}
+
+#[update]
+fn delete_family(handle: String) -> bool {
+    db::family::Family::delete(&handle)
+}
+
+#[update]
+fn add_child_to_family(
+    family_handle: String,
+    child_handle: String,
+    father_rel: String,
+    mother_rel: String,
+) -> bool {
+    db::family::add_child(&family_handle, &child_handle, &father_rel, &mother_rel)
+}
+
+#[update]
+fn remove_child_from_family(family_handle: String, child_handle: String) -> bool {
+    db::family::remove_child(&family_handle, &child_handle)
+}
+
+#[query]
+fn get_family_children(family_handle: String) -> Vec<db::person::Person> {
+    db::family::get_children(&family_handle)
+}
+
+#[query]
+fn get_person_parent_families(person_handle: String) -> Vec<db::family::Family> {
+    db::family::get_parent_families(&person_handle)
+}
+
+#[query]
+fn get_person_own_families(person_handle: String) -> Vec<db::family::Family> {
+    db::family::get_own_families(&person_handle)
+}

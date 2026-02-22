@@ -5,7 +5,7 @@ import { LoadingSpinner } from '../../components/LoadingSpinner';
 import { GenderIcon } from '../../components/GenderIcon';
 import { PersonName } from '../../components/PersonName';
 import { EventForm } from '../../components/EventForm';
-import type { Person, Event, EventInput } from '../../declarations/icp-gramps';
+import type { Person, Event, EventInput, Family } from '../../declarations/icp-gramps';
 
 export const Route = createFileRoute('/persons/$handle' as any)({
   component: PersonDetailPage,
@@ -23,6 +23,9 @@ function PersonDetailPage() {
   const [deathEvent, setDeathEvent] = useState<Event | null>(null);
   const [showBirthForm, setShowBirthForm] = useState(false);
   const [showDeathForm, setShowDeathForm] = useState(false);
+  const [parentFamilies, setParentFamilies] = useState<Family[]>([]);
+  const [ownFamilies, setOwnFamilies] = useState<Family[]>([]);
+  const [personsCache, setPersonsCache] = useState<Record<string, Person>>({});
 
   useEffect(() => {
     async function fetchPerson() {
@@ -36,6 +39,28 @@ function PersonDetailPage() {
           const death = await actor.get_person_death(handle);
           setBirthEvent(birth);
           setDeathEvent(death);
+
+          // Fetch families
+          const parentFams = await actor.get_person_parent_families(handle);
+          const ownFams = await actor.get_person_own_families(handle);
+          setParentFamilies(parentFams);
+          setOwnFamilies(ownFams);
+
+          // Build person cache for family members
+          const cache: Record<string, Person> = {};
+          const allFamilies = [...parentFams, ...ownFams];
+          const personHandles = new Set<string>();
+          allFamilies.forEach(fam => {
+            if (fam.father_handle) personHandles.add(fam.father_handle);
+            if (fam.mother_handle) personHandles.add(fam.mother_handle);
+          });
+          await Promise.all(
+            Array.from(personHandles).map(async (h) => {
+              const p = await actor.get_person(h);
+              if (p) cache[h] = p;
+            })
+          );
+          setPersonsCache(cache);
         } else {
           setError('Person not found');
         }
@@ -264,12 +289,70 @@ function PersonDetailPage() {
 
           <div className="border-t pt-4">
             <h2 className="text-lg font-semibold text-gray-900 mb-2">Parents</h2>
-            <p className="text-gray-500 italic">Parent information will be available in Phase 5.</p>
+            {parentFamilies.length === 0 ? (
+              <p className="text-gray-500 italic">No parent information recorded yet.</p>
+            ) : (
+              <div className="space-y-3">
+                {parentFamilies.map((family) => (
+                  <div key={family.handle} className="bg-gray-50 p-3 rounded">
+                    <a href={`/families/${family.handle}`} className="text-blue-600 hover:text-blue-800 font-medium">
+                      Family {family.gramps_id}
+                    </a>
+                    <div className="mt-1 text-sm space-y-1">
+                      {family.father_handle && personsCache[family.father_handle] && (
+                        <div>
+                          <span className="text-gray-600">Father: </span>
+                          <a href={`/persons/${family.father_handle}`} className="text-blue-600 hover:text-blue-800">
+                            <PersonName person={personsCache[family.father_handle]} />
+                          </a>
+                        </div>
+                      )}
+                      {family.mother_handle && personsCache[family.mother_handle] && (
+                        <div>
+                          <span className="text-gray-600">Mother: </span>
+                          <a href={`/persons/${family.mother_handle}`} className="text-blue-600 hover:text-blue-800">
+                            <PersonName person={personsCache[family.mother_handle]} />
+                          </a>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
 
           <div className="border-t pt-4">
             <h2 className="text-lg font-semibold text-gray-900 mb-2">Families & Spouses</h2>
-            <p className="text-gray-500 italic">Family information will be available in Phase 5.</p>
+            {ownFamilies.length === 0 ? (
+              <p className="text-gray-500 italic">No family information recorded yet.</p>
+            ) : (
+              <div className="space-y-3">
+                {ownFamilies.map((family) => {
+                  // Find spouse (the other parent in the family)
+                  const spouseHandle = family.father_handle === handle 
+                    ? family.mother_handle 
+                    : family.father_handle;
+                  const spouse = spouseHandle ? personsCache[spouseHandle] : null;
+
+                  return (
+                    <div key={family.handle} className="bg-gray-50 p-3 rounded">
+                      <a href={`/families/${family.handle}`} className="text-blue-600 hover:text-blue-800 font-medium">
+                        Family {family.gramps_id}
+                      </a>
+                      {spouse && (
+                        <div className="mt-1 text-sm">
+                          <span className="text-gray-600">Spouse: </span>
+                          <a href={`/persons/${spouse.handle}`} className="text-blue-600 hover:text-blue-800">
+                            <PersonName person={spouse} />
+                          </a>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            )}
           </div>
         </div>
       </div>
