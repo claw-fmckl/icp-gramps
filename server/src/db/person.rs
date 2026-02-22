@@ -155,3 +155,69 @@ impl Person {
         })
     }
 }
+
+/// Attach an event to a person and set it as their birth ref.
+pub fn set_birth_event(person_handle: &str, event_handle: &str) {
+    with_connection(|conn| {
+        // Insert into person_event_ref
+        conn.execute(
+            "INSERT OR REPLACE INTO person_event_ref (person_handle, event_handle, role)
+             VALUES (?1, ?2, 'primary')",
+            [person_handle, event_handle],
+        )
+        .ok();
+        // Update person's birth_ref_handle
+        conn.execute(
+            "UPDATE person SET birth_ref_handle = ?1 WHERE handle = ?2",
+            [event_handle, person_handle],
+        )
+        .ok();
+    });
+}
+
+/// Attach an event to a person and set it as their death ref.
+pub fn set_death_event(person_handle: &str, event_handle: &str) {
+    with_connection(|conn| {
+        // Insert into person_event_ref
+        conn.execute(
+            "INSERT OR REPLACE INTO person_event_ref (person_handle, event_handle, role)
+             VALUES (?1, ?2, 'primary')",
+            [person_handle, event_handle],
+        )
+        .ok();
+        // Update person's death_ref_handle
+        conn.execute(
+            "UPDATE person SET death_ref_handle = ?1 WHERE handle = ?2",
+            [event_handle, person_handle],
+        )
+        .ok();
+    });
+}
+
+/// Get the birth event for a person (follows birth_ref_handle).
+pub fn get_birth_event(person_handle: &str) -> Option<super::event::Event> {
+    with_connection(|conn| {
+        let event_handle: String = conn
+            .query_row(
+                "SELECT birth_ref_handle FROM person WHERE handle = ?1",
+                [person_handle],
+                |row| row.get(0),
+            )
+            .ok()?;
+        super::event::Event::get(&event_handle)
+    })
+}
+
+/// Get the death event for a person (follows death_ref_handle).
+pub fn get_death_event(person_handle: &str) -> Option<super::event::Event> {
+    with_connection(|conn| {
+        let event_handle: String = conn
+            .query_row(
+                "SELECT death_ref_handle FROM person WHERE handle = ?1",
+                [person_handle],
+                |row| row.get(0),
+            )
+            .ok()?;
+        super::event::Event::get(&event_handle)
+    })
+}

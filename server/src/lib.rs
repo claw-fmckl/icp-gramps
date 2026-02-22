@@ -82,3 +82,65 @@ fn update_person(handle: String, input: db::person::PersonInput) -> Option<db::p
 fn delete_person(handle: String) -> bool {
     db::person::Person::delete(&handle)
 }
+
+// --- Event API ---
+
+#[update]
+async fn create_event(input: db::event::EventInput) -> Option<db::event::Event> {
+    let handle = db::new_handle().await;
+    let gramps_id = with_connection(|conn| db::next_gramps_id(conn, "event"));
+    db::event::Event::create(&handle, &gramps_id, &input)
+}
+
+#[update]
+fn update_event(handle: String, input: db::event::EventInput) -> Option<db::event::Event> {
+    db::event::Event::update(&handle, &input)
+}
+
+#[update]
+fn delete_event(handle: String) -> bool {
+    db::event::Event::delete(&handle)
+}
+
+#[query]
+fn get_event(handle: String) -> Option<db::event::Event> {
+    db::event::Event::get(&handle)
+}
+
+/// Create a birth event and link it to a person.
+#[update]
+async fn set_person_birth(
+    person_handle: String,
+    input: db::event::EventInput,
+) -> Option<db::event::Event> {
+    let handle = db::new_handle().await;
+    let gramps_id = with_connection(|conn| db::next_gramps_id(conn, "event"));
+    let event = db::event::Event::create(&handle, &gramps_id, &input)?;
+    db::person::set_birth_event(&person_handle, &handle);
+    Some(event)
+}
+
+/// Create a death event and link it to a person.
+#[update]
+async fn set_person_death(
+    person_handle: String,
+    input: db::event::EventInput,
+) -> Option<db::event::Event> {
+    let handle = db::new_handle().await;
+    let gramps_id = with_connection(|conn| db::next_gramps_id(conn, "event"));
+    let event = db::event::Event::create(&handle, &gramps_id, &input)?;
+    db::person::set_death_event(&person_handle, &handle);
+    Some(event)
+}
+
+/// Get the birth event for a person.
+#[query]
+fn get_person_birth(person_handle: String) -> Option<db::event::Event> {
+    db::person::get_birth_event(&person_handle)
+}
+
+/// Get the death event for a person.
+#[query]
+fn get_person_death(person_handle: String) -> Option<db::event::Event> {
+    db::person::get_death_event(&person_handle)
+}

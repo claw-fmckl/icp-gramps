@@ -24,6 +24,28 @@ type PersonInput = record {
   private : opt bool;
 };
 
+type Event = record {
+  handle : text;
+  gramps_id : text;
+  event_type : text;
+  place_text : opt text;
+  date_sortval : opt int64;
+  date_text : opt text;
+  description : text;
+  private : bool;
+  change_date : int64;
+  created_at : int64;
+};
+
+type EventInput = record {
+  event_type : text;
+  place_text : opt text;
+  date_sortval : opt int64;
+  date_text : opt text;
+  description : opt text;
+  private : opt bool;
+};
+
 service : {
   http_request : (record { url : text; method : text; headers : vec record { text; text }; body : vec nat8 }) -> (record { status_code : nat16; headers : vec record { text; text }; body : vec nat8; upgrade : opt bool }) query;
   http_request_update : (record { url : text; method : text; headers : vec record { text; text }; body : vec nat8 }) -> (record { status_code : nat16; headers : vec record { text; text }; body : vec nat8; upgrade : opt bool });
@@ -32,4 +54,12 @@ service : {
   create_person : (PersonInput) -> (opt Person);
   update_person : (text, PersonInput) -> (opt Person);
   delete_person : (text) -> (bool);
+  create_event : (EventInput) -> (opt Event);
+  update_event : (text, EventInput) -> (opt Event);
+  delete_event : (text) -> (bool);
+  get_event : (text) -> (opt Event) query;
+  set_person_birth : (text, EventInput) -> (opt Event);
+  set_person_death : (text, EventInput) -> (opt Event);
+  get_person_birth : (text) -> (opt Event) query;
+  get_person_death : (text) -> (opt Event) query;
 };

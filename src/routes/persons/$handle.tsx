@@ -4,7 +4,8 @@ import { useActor } from '../../hooks/useActor';
 import { LoadingSpinner } from '../../components/LoadingSpinner';
 import { GenderIcon } from '../../components/GenderIcon';
 import { PersonName } from '../../components/PersonName';
-import type { Person } from '../../declarations/icp-gramps';
+import { EventForm } from '../../components/EventForm';
+import type { Person, Event, EventInput } from '../../declarations/icp-gramps';
 
 export const Route = createFileRoute('/persons/$handle' as any)({
   component: PersonDetailPage,
@@ -18,6 +19,10 @@ function PersonDetailPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [deleting, setDeleting] = useState(false);
+  const [birthEvent, setBirthEvent] = useState<Event | null>(null);
+  const [deathEvent, setDeathEvent] = useState<Event | null>(null);
+  const [showBirthForm, setShowBirthForm] = useState(false);
+  const [showDeathForm, setShowDeathForm] = useState(false);
 
   useEffect(() => {
     async function fetchPerson() {
@@ -26,6 +31,11 @@ function PersonDetailPage() {
         const result = await actor.get_person(handle);
         if (result) {
           setPerson(result);
+          // Fetch birth and death events
+          const birth = await actor.get_person_birth(handle);
+          const death = await actor.get_person_death(handle);
+          setBirthEvent(birth);
+          setDeathEvent(death);
         } else {
           setError('Person not found');
         }
@@ -55,6 +65,40 @@ function PersonDetailPage() {
       setError(err instanceof Error ? err.message : 'Failed to delete person');
     } finally {
       setDeleting(false);
+    }
+  }
+
+  async function handleBirthSubmit(input: EventInput) {
+    try {
+      if (birthEvent) {
+        // Update existing birth event
+        const updated = await actor.update_event(birthEvent.handle, input);
+        setBirthEvent(updated);
+      } else {
+        // Create new birth event
+        const newEvent = await actor.set_person_birth(handle, input);
+        setBirthEvent(newEvent);
+      }
+      setShowBirthForm(false);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to save birth event');
+    }
+  }
+
+  async function handleDeathSubmit(input: EventInput) {
+    try {
+      if (deathEvent) {
+        // Update existing death event
+        const updated = await actor.update_event(deathEvent.handle, input);
+        setDeathEvent(updated);
+      } else {
+        // Create new death event
+        const newEvent = await actor.set_person_death(handle, input);
+        setDeathEvent(newEvent);
+      }
+      setShowDeathForm(false);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to save death event');
     }
   }
 
@@ -149,13 +193,73 @@ function PersonDetailPage() {
           </div>
 
           <div className="border-t pt-4 mt-6">
-            <h2 className="text-lg font-semibold text-gray-900 mb-2">Birth</h2>
-            <p className="text-gray-500 italic">No birth information recorded yet.</p>
+            <div className="flex justify-between items-start mb-2">
+              <h2 className="text-lg font-semibold text-gray-900">Birth</h2>
+              {!showBirthForm && (
+                <button
+                  onClick={() => setShowBirthForm(true)}
+                  className="text-sm px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700"
+                >
+                  {birthEvent ? 'Edit' : 'Add birth'}
+                </button>
+              )}
+            </div>
+            {showBirthForm ? (
+              <EventForm
+                eventType="birth"
+                initialData={birthEvent ? {
+                  date_text: birthEvent.date_text || undefined,
+                  place_text: birthEvent.place_text || undefined,
+                  description: birthEvent.description || undefined,
+                  private: birthEvent.private,
+                } : undefined}
+                onSubmit={handleBirthSubmit}
+                onCancel={() => setShowBirthForm(false)}
+              />
+            ) : birthEvent ? (
+              <div className="space-y-1">
+                {birthEvent.date_text && <p className="text-gray-900">{birthEvent.date_text}</p>}
+                {birthEvent.place_text && <p className="text-gray-600">{birthEvent.place_text}</p>}
+                {birthEvent.description && <p className="text-sm text-gray-500 mt-2">{birthEvent.description}</p>}
+              </div>
+            ) : (
+              <p className="text-gray-500 italic">No birth information recorded yet.</p>
+            )}
           </div>
 
           <div className="border-t pt-4">
-            <h2 className="text-lg font-semibold text-gray-900 mb-2">Death</h2>
-            <p className="text-gray-500 italic">No death information recorded yet.</p>
+            <div className="flex justify-between items-start mb-2">
+              <h2 className="text-lg font-semibold text-gray-900">Death</h2>
+              {!showDeathForm && (
+                <button
+                  onClick={() => setShowDeathForm(true)}
+                  className="text-sm px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700"
+                >
+                  {deathEvent ? 'Edit' : 'Add death'}
+                </button>
+              )}
+            </div>
+            {showDeathForm ? (
+              <EventForm
+                eventType="death"
+                initialData={deathEvent ? {
+                  date_text: deathEvent.date_text || undefined,
+                  place_text: deathEvent.place_text || undefined,
+                  description: deathEvent.description || undefined,
+                  private: deathEvent.private,
+                } : undefined}
+                onSubmit={handleDeathSubmit}
+                onCancel={() => setShowDeathForm(false)}
+              />
+            ) : deathEvent ? (
+              <div className="space-y-1">
+                {deathEvent.date_text && <p className="text-gray-900">{deathEvent.date_text}</p>}
+                {deathEvent.place_text && <p className="text-gray-600">{deathEvent.place_text}</p>}
+                {deathEvent.description && <p className="text-sm text-gray-500 mt-2">{deathEvent.description}</p>}
+              </div>
+            ) : (
+              <p className="text-gray-500 italic">No death information recorded yet.</p>
+            )}
           </div>
 
           <div className="border-t pt-4">
