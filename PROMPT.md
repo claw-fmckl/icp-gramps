@@ -1,10 +1,10 @@
 ~~~
 Read the implementation plan at:
-  ~/gh/icp-gramps/specs/Phase 4/PLAN.md
+  ~/gh/icp-gramps/specs/Phase 5/PLAN.md
 
 Find the first spec group that has incomplete tasks (unchecked `- [ ]` items).
 Read the corresponding spec file in:
-  ~/gh/icp-gramps/specs/Phase 4/
+  ~/gh/icp-gramps/specs/Phase 5/
 
 Study the relevant source files in the target codebase at:
   ~/gh/icp-gramps/
@@ -24,5 +24,5 @@ Then implement the tasks for that ONE spec group, in order. Follow these rules:
 9. STOP. Do not continue to the next spec group.
 
 When completely finished with the session, run this command to notify the orchestrator:
-openclaw system event --text "Done: icp-gramps Phase 4 session complete — see SESSION.md" --mode now
+openclaw system event --text "Done: icp-gramps Phase 5 session complete — see SESSION.md" --mode now
 ~~~
