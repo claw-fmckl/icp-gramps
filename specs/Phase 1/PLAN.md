@@ -49,12 +49,12 @@ cargo check -p server  # (will fail without migrations, that's OK at this point)
 
 **Tasks:**
 
-- [ ] Create `src/main.tsx`
-- [ ] Create `src/index.css` (Tailwind imports)
-- [ ] Create `src/vite-env.d.ts`
-- [ ] Create `src/routes/__root.tsx` (layout with nav)
-- [ ] Create `src/routes/index.tsx` (home page with stat cards)
-- [ ] Run `pnpm install` to generate `pnpm-lock.yaml`
+- [x] Create `src/main.tsx`
+- [x] Create `src/index.css` (Tailwind imports)
+- [x] Create `src/vite-env.d.ts`
+- [x] Create `src/routes/__root.tsx` (layout with nav)
+- [x] Create `src/routes/index.tsx` (home page with stat cards)
+- [x] Run `pnpm install` to generate `pnpm-lock.yaml`
 
 **Verification:**
 ```bash

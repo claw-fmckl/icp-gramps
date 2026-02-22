@@ -17,6 +17,7 @@
     "@tanstack/router-plugin": "latest",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@vitejs/plugin-react": "^5.1.4",
     "autoprefixer": "^10",
     "postcss": "^8",
     "tailwindcss": "^3",
