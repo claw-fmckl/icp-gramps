@@ -88,14 +88,14 @@ impl Family {
                 "INSERT INTO family (handle, gramps_id, father_handle, mother_handle,
                           family_type, private, change_date)
                  VALUES (?1, ?2, ?3, ?4, ?5, ?6, strftime('%s','now'))",
-                rusqlite::params![
+                (
                     handle,
                     gramps_id,
-                    input.father_handle,
-                    input.mother_handle,
+                    &input.father_handle,
+                    &input.mother_handle,
                     input.family_type.as_deref().unwrap_or("married"),
                     input.private.unwrap_or(false) as i64,
-                ],
+                ),
             )
             .ok()?;
             Family::get(handle)
@@ -108,13 +108,13 @@ impl Family {
                 "UPDATE family SET father_handle=?1, mother_handle=?2, family_type=?3,
                           private=?4, change_date=strftime('%s','now')
                  WHERE handle=?5",
-                rusqlite::params![
-                    input.father_handle,
-                    input.mother_handle,
+                (
+                    &input.father_handle,
+                    &input.mother_handle,
                     input.family_type.as_deref().unwrap_or("married"),
                     input.private.unwrap_or(false) as i64,
                     handle,
-                ],
+                ),
             )
             .ok()?;
             Family::get(handle)
@@ -141,7 +141,7 @@ pub fn add_child(
         conn.execute(
             "INSERT OR REPLACE INTO family_child (family_handle, child_handle, father_rel, mother_rel)
              VALUES (?1, ?2, ?3, ?4)",
-            rusqlite::params![family_handle, child_handle, father_rel, mother_rel],
+            (family_handle, child_handle, father_rel, mother_rel),
         )
         .is_ok()
     })
@@ -152,7 +152,7 @@ pub fn remove_child(family_handle: &str, child_handle: &str) -> bool {
     with_connection(|conn| {
         conn.execute(
             "DELETE FROM family_child WHERE family_handle = ?1 AND child_handle = ?2",
-            rusqlite::params![family_handle, child_handle],
+            (family_handle, child_handle),
         )
         .map(|n| n > 0)
         .unwrap_or(false)

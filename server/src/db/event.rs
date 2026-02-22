@@ -35,17 +35,17 @@ impl Event {
                 "INSERT INTO event (handle, gramps_id, event_type, place_handle, place_text, date_sortval,
                           date_text, description, private, change_date)
                  VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, strftime('%s','now'))",
-                rusqlite::params![
+                (
                     handle,
                     gramps_id,
-                    input.event_type,
-                    input.place_handle,
-                    input.place_text,
+                    &input.event_type,
+                    &input.place_handle,
+                    &input.place_text,
                     input.date_sortval,
-                    input.date_text,
+                    &input.date_text,
                     input.description.as_deref().unwrap_or(""),
                     input.private.unwrap_or(false) as i64,
-                ],
+                ),
             )
             .ok()?;
             Event::get(handle)
@@ -86,16 +86,16 @@ impl Event {
                           date_text=?5, description=?6, private=?7,
                           change_date=strftime('%s','now')
                  WHERE handle=?8",
-                rusqlite::params![
-                    input.event_type,
-                    input.place_handle,
-                    input.place_text,
+                (
+                    &input.event_type,
+                    &input.place_handle,
+                    &input.place_text,
                     input.date_sortval,
-                    input.date_text,
+                    &input.date_text,
                     input.description.as_deref().unwrap_or(""),
                     input.private.unwrap_or(false) as i64,
                     handle,
-                ],
+                ),
             )
             .ok()?;
             Event::get(handle)

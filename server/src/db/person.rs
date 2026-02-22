@@ -100,17 +100,17 @@ impl Person {
                 "INSERT INTO person (handle, gramps_id, gender, given_names, call_name,
                           surname, suffix, title_text, private, change_date)
                  VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, strftime('%s','now'))",
-                rusqlite::params![
+                (
                     handle,
                     gramps_id,
                     input.gender,
-                    input.given_names,
-                    input.call_name,
-                    input.surname,
-                    input.suffix,
-                    input.title_text,
+                    &input.given_names,
+                    &input.call_name,
+                    &input.surname,
+                    &input.suffix,
+                    &input.title_text,
                     input.private.unwrap_or(false) as i64,
-                ],
+                ),
             )
             .ok()?;
 
@@ -120,7 +120,7 @@ impl Person {
                 .to_string();
             conn.execute(
                 "INSERT INTO person_fts (person_handle, full_name) VALUES (?1, ?2)",
-                rusqlite::params![handle, full_name],
+                (handle, full_name),
             )
             .ok()?;
 
@@ -135,23 +135,23 @@ impl Person {
                           surname=?4, suffix=?5, title_text=?6,
                           private=?7, change_date=strftime('%s','now')
                  WHERE handle=?8",
-                rusqlite::params![
+                (
                     input.gender,
-                    input.given_names,
-                    input.call_name,
-                    input.surname,
-                    input.suffix,
-                    input.title_text,
+                    &input.given_names,
+                    &input.call_name,
+                    &input.surname,
+                    &input.suffix,
+                    &input.title_text,
                     input.private.unwrap_or(false) as i64,
                     handle,
-                ],
+                ),
             )
             .ok()?;
 
             // Update FTS5 index (delete + reinsert)
             conn.execute(
                 "INSERT INTO person_fts(person_fts, person_handle, full_name) VALUES ('delete', ?1, '')",
-                rusqlite::params![handle],
+                (handle,),
             )
             .ok()?;
 
@@ -160,7 +160,7 @@ impl Person {
                 .to_string();
             conn.execute(
                 "INSERT INTO person_fts (person_handle, full_name) VALUES (?1, ?2)",
-                rusqlite::params![handle, full_name],
+                (handle, full_name),
             )
             .ok()?;
 

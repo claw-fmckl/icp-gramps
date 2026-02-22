@@ -35,17 +35,17 @@ impl Place {
                 "INSERT INTO place (handle, gramps_id, title, name, place_type, latitude,
                           longitude, code, private, change_date)
                  VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, strftime('%s','now'))",
-                rusqlite::params![
+                (
                     handle,
                     gramps_id,
-                    input.title,
+                    &input.title,
                     input.name.as_deref().unwrap_or(&input.title),
                     input.place_type.as_deref().unwrap_or("unknown"),
                     input.latitude,
                     input.longitude,
-                    input.code,
+                    &input.code,
                     input.private.unwrap_or(false) as i64,
-                ],
+                ),
             )
             .ok()?;
             Place::get(handle)
@@ -117,16 +117,16 @@ impl Place {
                           longitude=?5, code=?6, private=?7,
                           change_date=strftime('%s','now')
                  WHERE handle=?8",
-                rusqlite::params![
-                    input.title,
+                (
+                    &input.title,
                     input.name.as_deref().unwrap_or(&input.title),
                     input.place_type.as_deref().unwrap_or("unknown"),
                     input.latitude,
                     input.longitude,
-                    input.code,
+                    &input.code,
                     input.private.unwrap_or(false) as i64,
                     handle,
-                ],
+                ),
             )
             .ok()?;
             Place::get(handle)

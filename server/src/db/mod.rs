@@ -16,8 +16,19 @@ pub async fn new_handle() -> String {
     hex::encode(&bytes[..8])
 }
 
+/// Generate a handle synchronously using timestamp-based approach.
+/// For HTTP routes where async is not supported.
+pub fn sync_new_handle() -> String {
+    let time = time();
+    let hash = time.wrapping_mul(0x9e3779b97f4a7c15); // Fibonacci hash
+    format!("{:016x}", hash)
+}
+
 /// Allocate the next Gramps ID for an entity type (person → "I0001", family → "F0001", etc.)
-pub fn next_gramps_id(conn: &mut rusqlite::Connection, entity_type: &str) -> String {
+pub fn next_gramps_id<C>(conn: C, entity_type: &str) -> String
+where
+    C: std::ops::DerefMut<Target = ic_rusqlite::Connection>,
+{
     let prefix = match entity_type {
         "person" => "I",
         "family" => "F",

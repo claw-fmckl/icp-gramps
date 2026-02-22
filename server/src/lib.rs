@@ -10,12 +10,12 @@ mod route_tree {
     include!(concat!(env!("OUT_DIR"), "/__route_tree.rs"));
 }
 
-static DIST_DIR: Dir = include_dir!("$CARGO_MANIFEST_DIR/../../dist");
+static DIST_DIR: Dir = include_dir!("$CARGO_MANIFEST_DIR/../dist");
 static MIGRATIONS: &[ic_sql_migrate::Migration] = ic_sql_migrate::include_migrations!();
 
 fn run_migrations() {
-    with_connection(|conn: &mut Connection| {
-        ic_sql_migrate::sqlite::migrate(conn, MIGRATIONS).unwrap();
+    with_connection(|mut conn| {
+        ic_sql_migrate::sqlite::migrate(&mut *conn, MIGRATIONS).unwrap();
     });
 }
 

@@ -23,14 +23,14 @@ The codebase has compilation errors from previous phases. The ic-asset-router an
 
 **Tasks:**
 
-- [ ] Fix `server/src/lib.rs`: change `include_dir!` path from `../../dist` to `../dist`
-- [ ] Fix `server/src/lib.rs`: remove type annotation from all `with_connection(|conn: &mut Connection|` → `with_connection(|conn|`
-- [ ] Fix `server/src/routes/index.rs`: change `include_str!("../../dist/index.html")` to use `concat!(env!("CARGO_MANIFEST_DIR"), "/../dist/index.html")`
-- [ ] Fix ALL files in `server/src/db/`: replace `rusqlite::params![a, b, c]` with tuple syntax `(a, b, c)`
-- [ ] Fix ALL route handler files: replace `Cow::Borrowed(b"...")` with `b"..." as &[u8]`
-- [ ] Fix `server/src/routes/api/persons/_handle/index.rs`: replace `ctx.params.get("handle")` with `ctx.params.handle`
-- [ ] Fix any other route files using `.get()` on params
-- [ ] Run `pnpm run build` then `cargo build -p server --target wasm32-wasip1 --release` — must compile clean
+- [x] Fix `server/src/lib.rs`: change `include_dir!` path from `../../dist` to `../dist`
+- [x] Fix `server/src/lib.rs`: remove type annotation from all `with_connection(|conn: &mut Connection|` → `with_connection(|conn|`
+- [x] Fix `server/src/routes/index.rs`: change `include_str!("../../dist/index.html")` to use `concat!(env!("CARGO_MANIFEST_DIR"), "/../dist/index.html")`
+- [x] Fix ALL files in `server/src/db/`: replace `rusqlite::params![a, b, c]` with tuple syntax `(a, b, c)`
+- [x] Fix ALL route handler files: replace `Cow::Borrowed(b"...")` with `b"..." as &[u8]`
+- [x] Fix `server/src/routes/api/persons/_handle/index.rs`: replace `ctx.params.get("handle")` with `ctx.params.handle`
+- [x] Fix any other route files using `.get()` on params
+- [x] Run `pnpm run build` then `cargo build -p server --target wasm32-wasip1 --release` — must compile clean
 
 **Verification:**
 ```bash
