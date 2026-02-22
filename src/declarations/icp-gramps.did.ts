@@ -31,6 +31,7 @@ export const idlFactory: IDL.InterfaceFactory = ({ IDL }) => {
     handle: IDL.Text,
     gramps_id: IDL.Text,
     event_type: IDL.Text,
+    place_handle: IDL.Opt(IDL.Text),
     place_text: IDL.Opt(IDL.Text),
     date_sortval: IDL.Opt(IDL.Int64),
     date_text: IDL.Opt(IDL.Text),
@@ -42,6 +43,7 @@ export const idlFactory: IDL.InterfaceFactory = ({ IDL }) => {
 
   const EventInput = IDL.Record({
     event_type: IDL.Text,
+    place_handle: IDL.Opt(IDL.Text),
     place_text: IDL.Opt(IDL.Text),
     date_sortval: IDL.Opt(IDL.Int64),
     date_text: IDL.Opt(IDL.Text),
@@ -64,6 +66,30 @@ export const idlFactory: IDL.InterfaceFactory = ({ IDL }) => {
     father_handle: IDL.Opt(IDL.Text),
     mother_handle: IDL.Opt(IDL.Text),
     family_type: IDL.Opt(IDL.Text),
+    private: IDL.Opt(IDL.Bool),
+  });
+
+  const Place = IDL.Record({
+    handle: IDL.Text,
+    gramps_id: IDL.Text,
+    title: IDL.Text,
+    name: IDL.Text,
+    place_type: IDL.Text,
+    latitude: IDL.Opt(IDL.Float64),
+    longitude: IDL.Opt(IDL.Float64),
+    code: IDL.Opt(IDL.Text),
+    private: IDL.Bool,
+    change_date: IDL.Int64,
+    created_at: IDL.Int64,
+  });
+
+  const PlaceInput = IDL.Record({
+    title: IDL.Text,
+    name: IDL.Opt(IDL.Text),
+    place_type: IDL.Opt(IDL.Text),
+    latitude: IDL.Opt(IDL.Float64),
+    longitude: IDL.Opt(IDL.Float64),
+    code: IDL.Opt(IDL.Text),
     private: IDL.Opt(IDL.Bool),
   });
 
@@ -119,6 +145,12 @@ export const idlFactory: IDL.InterfaceFactory = ({ IDL }) => {
     set_person_death: IDL.Func([IDL.Text, EventInput], [IDL.Opt(Event)], []),
     get_person_birth: IDL.Func([IDL.Text], [IDL.Opt(Event)], ['query']),
     get_person_death: IDL.Func([IDL.Text], [IDL.Opt(Event)], ['query']),
+    list_places: IDL.Func([], [IDL.Vec(Place)], ['query']),
+    get_place: IDL.Func([IDL.Text], [IDL.Opt(Place)], ['query']),
+    search_places: IDL.Func([IDL.Text], [IDL.Vec(Place)], ['query']),
+    create_place: IDL.Func([PlaceInput], [IDL.Opt(Place)], []),
+    update_place: IDL.Func([IDL.Text, PlaceInput], [IDL.Opt(Place)], []),
+    delete_place: IDL.Func([IDL.Text], [IDL.Bool], []),
     list_families: IDL.Func([], [IDL.Vec(Family)], ['query']),
     get_family: IDL.Func([IDL.Text], [IDL.Opt(Family)], ['query']),
     create_family: IDL.Func([FamilyInput], [IDL.Opt(Family)], []),

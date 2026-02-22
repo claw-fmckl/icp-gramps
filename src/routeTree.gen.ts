@@ -10,8 +10,11 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as PlacesIndexRouteImport } from './routes/places/index'
 import { Route as PersonsIndexRouteImport } from './routes/persons/index'
 import { Route as FamiliesIndexRouteImport } from './routes/families/index'
+import { Route as PlacesNewRouteImport } from './routes/places/new'
+import { Route as PlacesHandleRouteImport } from './routes/places/$handle'
 import { Route as PersonsNewRouteImport } from './routes/persons/new'
 import { Route as PersonsHandleRouteImport } from './routes/persons/$handle'
 import { Route as FamiliesNewRouteImport } from './routes/families/new'
@@ -23,6 +26,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PlacesIndexRoute = PlacesIndexRouteImport.update({
+  id: '/places/',
+  path: '/places/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PersonsIndexRoute = PersonsIndexRouteImport.update({
   id: '/persons/',
   path: '/persons/',
@@ -31,6 +39,16 @@ const PersonsIndexRoute = PersonsIndexRouteImport.update({
 const FamiliesIndexRoute = FamiliesIndexRouteImport.update({
   id: '/families/',
   path: '/families/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PlacesNewRoute = PlacesNewRouteImport.update({
+  id: '/places/new',
+  path: '/places/new',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PlacesHandleRoute = PlacesHandleRouteImport.update({
+  id: '/places/$handle',
+  path: '/places/$handle',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PersonsNewRoute = PersonsNewRouteImport.update({
@@ -65,8 +83,11 @@ export interface FileRoutesByFullPath {
   '/families/new': typeof FamiliesNewRoute
   '/persons/$handle': typeof PersonsHandleRouteWithChildren
   '/persons/new': typeof PersonsNewRoute
+  '/places/$handle': typeof PlacesHandleRoute
+  '/places/new': typeof PlacesNewRoute
   '/families/': typeof FamiliesIndexRoute
   '/persons/': typeof PersonsIndexRoute
+  '/places/': typeof PlacesIndexRoute
   '/persons/$handle/edit': typeof PersonsHandleEditRoute
 }
 export interface FileRoutesByTo {
@@ -75,8 +96,11 @@ export interface FileRoutesByTo {
   '/families/new': typeof FamiliesNewRoute
   '/persons/$handle': typeof PersonsHandleRouteWithChildren
   '/persons/new': typeof PersonsNewRoute
+  '/places/$handle': typeof PlacesHandleRoute
+  '/places/new': typeof PlacesNewRoute
   '/families': typeof FamiliesIndexRoute
   '/persons': typeof PersonsIndexRoute
+  '/places': typeof PlacesIndexRoute
   '/persons/$handle/edit': typeof PersonsHandleEditRoute
 }
 export interface FileRoutesById {
@@ -86,8 +110,11 @@ export interface FileRoutesById {
   '/families/new': typeof FamiliesNewRoute
   '/persons/$handle': typeof PersonsHandleRouteWithChildren
   '/persons/new': typeof PersonsNewRoute
+  '/places/$handle': typeof PlacesHandleRoute
+  '/places/new': typeof PlacesNewRoute
   '/families/': typeof FamiliesIndexRoute
   '/persons/': typeof PersonsIndexRoute
+  '/places/': typeof PlacesIndexRoute
   '/persons/$handle/edit': typeof PersonsHandleEditRoute
 }
 export interface FileRouteTypes {
@@ -98,8 +125,11 @@ export interface FileRouteTypes {
     | '/families/new'
     | '/persons/$handle'
     | '/persons/new'
+    | '/places/$handle'
+    | '/places/new'
     | '/families/'
     | '/persons/'
+    | '/places/'
     | '/persons/$handle/edit'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -108,8 +138,11 @@ export interface FileRouteTypes {
     | '/families/new'
     | '/persons/$handle'
     | '/persons/new'
+    | '/places/$handle'
+    | '/places/new'
     | '/families'
     | '/persons'
+    | '/places'
     | '/persons/$handle/edit'
   id:
     | '__root__'
@@ -118,8 +151,11 @@ export interface FileRouteTypes {
     | '/families/new'
     | '/persons/$handle'
     | '/persons/new'
+    | '/places/$handle'
+    | '/places/new'
     | '/families/'
     | '/persons/'
+    | '/places/'
     | '/persons/$handle/edit'
   fileRoutesById: FileRoutesById
 }
@@ -129,8 +165,11 @@ export interface RootRouteChildren {
   FamiliesNewRoute: typeof FamiliesNewRoute
   PersonsHandleRoute: typeof PersonsHandleRouteWithChildren
   PersonsNewRoute: typeof PersonsNewRoute
+  PlacesHandleRoute: typeof PlacesHandleRoute
+  PlacesNewRoute: typeof PlacesNewRoute
   FamiliesIndexRoute: typeof FamiliesIndexRoute
   PersonsIndexRoute: typeof PersonsIndexRoute
+  PlacesIndexRoute: typeof PlacesIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -140,6 +179,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/places/': {
+      id: '/places/'
+      path: '/places'
+      fullPath: '/places/'
+      preLoaderRoute: typeof PlacesIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/persons/': {
@@ -154,6 +200,20 @@ declare module '@tanstack/react-router' {
       path: '/families'
       fullPath: '/families/'
       preLoaderRoute: typeof FamiliesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/places/new': {
+      id: '/places/new'
+      path: '/places/new'
+      fullPath: '/places/new'
+      preLoaderRoute: typeof PlacesNewRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/places/$handle': {
+      id: '/places/$handle'
+      path: '/places/$handle'
+      fullPath: '/places/$handle'
+      preLoaderRoute: typeof PlacesHandleRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/persons/new': {
@@ -212,8 +272,11 @@ const rootRouteChildren: RootRouteChildren = {
   FamiliesNewRoute: FamiliesNewRoute,
   PersonsHandleRoute: PersonsHandleRouteWithChildren,
   PersonsNewRoute: PersonsNewRoute,
+  PlacesHandleRoute: PlacesHandleRoute,
+  PlacesNewRoute: PlacesNewRoute,
   FamiliesIndexRoute: FamiliesIndexRoute,
   PersonsIndexRoute: PersonsIndexRoute,
+  PlacesIndexRoute: PlacesIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

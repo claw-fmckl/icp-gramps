@@ -28,6 +28,7 @@ type Event = record {
   handle : text;
   gramps_id : text;
   event_type : text;
+  place_handle : opt text;
   place_text : opt text;
   date_sortval : opt int64;
   date_text : opt text;
@@ -39,6 +40,7 @@ type Event = record {
 
 type EventInput = record {
   event_type : text;
+  place_handle : opt text;
   place_text : opt text;
   date_sortval : opt int64;
   date_text : opt text;
@@ -64,6 +66,30 @@ type FamilyInput = record {
   private : opt bool;
 };
 
+type Place = record {
+  handle : text;
+  gramps_id : text;
+  title : text;
+  name : text;
+  place_type : text;
+  latitude : opt float64;
+  longitude : opt float64;
+  code : opt text;
+  private : bool;
+  change_date : int64;
+  created_at : int64;
+};
+
+type PlaceInput = record {
+  title : text;
+  name : opt text;
+  place_type : opt text;
+  latitude : opt float64;
+  longitude : opt float64;
+  code : opt text;
+  private : opt bool;
+};
+
 service : {
   http_request : (record { url : text; method : text; headers : vec record { text; text }; body : vec nat8 }) -> (record { status_code : nat16; headers : vec record { text; text }; body : vec nat8; upgrade : opt bool }) query;
   http_request_update : (record { url : text; method : text; headers : vec record { text; text }; body : vec nat8 }) -> (record { status_code : nat16; headers : vec record { text; text }; body : vec nat8; upgrade : opt bool });
@@ -80,6 +106,12 @@ service : {
   set_person_death : (text, EventInput) -> (opt Event);
   get_person_birth : (text) -> (opt Event) query;
   get_person_death : (text) -> (opt Event) query;
+  list_places : () -> (vec Place) query;
+  get_place : (text) -> (opt Place) query;
+  search_places : (text) -> (vec Place) query;
+  create_place : (PlaceInput) -> (opt Place);
+  update_place : (text, PlaceInput) -> (opt Place);
+  delete_place : (text) -> (bool);
   list_families : () -> (vec Family) query;
   get_family : (text) -> (opt Family) query;
   create_family : (FamilyInput) -> (opt Family);

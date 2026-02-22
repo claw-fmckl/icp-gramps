@@ -3,6 +3,7 @@
 pub mod event;
 pub mod family;
 pub mod person;
+pub mod place;
 
 use ic_cdk::api::time;
 

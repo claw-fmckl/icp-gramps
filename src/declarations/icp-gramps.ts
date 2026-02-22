@@ -28,6 +28,7 @@ export interface Event {
   handle: string;
   gramps_id: string;
   event_type: string;
+  place_handle: string | null;
   place_text: string | null;
   date_sortval: bigint | null;
   date_text: string | null;
@@ -39,6 +40,7 @@ export interface Event {
 
 export interface EventInput {
   event_type: string;
+  place_handle: string | null;
   place_text: string | null;
   date_sortval: bigint | null;
   date_text: string | null;
@@ -64,6 +66,30 @@ export interface FamilyInput {
   private: boolean | null;
 }
 
+export interface Place {
+  handle: string;
+  gramps_id: string;
+  title: string;
+  name: string;
+  place_type: string;
+  latitude: number | null;
+  longitude: number | null;
+  code: string | null;
+  private: boolean;
+  change_date: bigint;
+  created_at: bigint;
+}
+
+export interface PlaceInput {
+  title: string;
+  name: string | null;
+  place_type: string | null;
+  latitude: number | null;
+  longitude: number | null;
+  code: string | null;
+  private: boolean | null;
+}
+
 export interface _SERVICE {
   list_persons: () => Promise<Person[]>;
   get_person: (handle: string) => Promise<Person | null>;
@@ -78,6 +104,12 @@ export interface _SERVICE {
   set_person_death: (person_handle: string, input: EventInput) => Promise<Event | null>;
   get_person_birth: (person_handle: string) => Promise<Event | null>;
   get_person_death: (person_handle: string) => Promise<Event | null>;
+  list_places: () => Promise<Place[]>;
+  get_place: (handle: string) => Promise<Place | null>;
+  search_places: (query: string) => Promise<Place[]>;
+  create_place: (input: PlaceInput) => Promise<Place | null>;
+  update_place: (handle: string, input: PlaceInput) => Promise<Place | null>;
+  delete_place: (handle: string) => Promise<boolean>;
   list_families: () => Promise<Family[]>;
   get_family: (handle: string) => Promise<Family | null>;
   create_family: (input: FamilyInput) => Promise<Family | null>;

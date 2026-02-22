@@ -7,7 +7,8 @@ pub struct Event {
     pub handle: String,
     pub gramps_id: String,
     pub event_type: String, // "birth" | "death" | "marriage" | "baptism" | ...
-    pub place_text: Option<String>, // free text for now (Phase 6 adds Place entity)
+    pub place_handle: Option<String>, // reference to Place entity
+    pub place_text: Option<String>, // free text for backward compatibility
     pub date_sortval: Option<i64>, // YYYYMMDD integer for sorting
     pub date_text: Option<String>, // human-readable: "15 Mar 1872", "Abt. 1900", etc.
     pub description: String,
@@ -19,6 +20,7 @@ pub struct Event {
 #[derive(Debug, Clone, Serialize, Deserialize, CandidType)]
 pub struct EventInput {
     pub event_type: String,
+    pub place_handle: Option<String>,
     pub place_text: Option<String>,
     pub date_sortval: Option<i64>,
     pub date_text: Option<String>,
@@ -30,13 +32,14 @@ impl Event {
     pub fn create(handle: &str, gramps_id: &str, input: &EventInput) -> Option<Self> {
         with_connection(|conn| {
             conn.execute(
-                "INSERT INTO event (handle, gramps_id, event_type, place_text, date_sortval,
+                "INSERT INTO event (handle, gramps_id, event_type, place_handle, place_text, date_sortval,
                           date_text, description, private, change_date)
-                 VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, strftime('%s','now'))",
+                 VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, strftime('%s','now'))",
                 rusqlite::params![
                     handle,
                     gramps_id,
                     input.event_type,
+                    input.place_handle,
                     input.place_text,
                     input.date_sortval,
                     input.date_text,
@@ -52,7 +55,7 @@ impl Event {
     pub fn get(handle: &str) -> Option<Self> {
         with_connection(|conn| {
             conn.query_row(
-                "SELECT handle, gramps_id, event_type, place_text, date_sortval,
+                "SELECT handle, gramps_id, event_type, place_handle, place_text, date_sortval,
                         date_text, description, private, change_date, created_at
                  FROM event WHERE handle = ?1",
                 [handle],
@@ -61,13 +64,14 @@ impl Event {
                         handle: row.get(0)?,
                         gramps_id: row.get(1)?,
                         event_type: row.get(2)?,
-                        place_text: row.get(3)?,
-                        date_sortval: row.get(4)?,
-                        date_text: row.get(5)?,
-                        description: row.get(6)?,
-                        private: row.get::<_, i64>(7)? != 0,
-                        change_date: row.get(8)?,
-                        created_at: row.get(9)?,
+                        place_handle: row.get(3)?,
+                        place_text: row.get(4)?,
+                        date_sortval: row.get(5)?,
+                        date_text: row.get(6)?,
+                        description: row.get(7)?,
+                        private: row.get::<_, i64>(8)? != 0,
+                        change_date: row.get(9)?,
+                        created_at: row.get(10)?,
                     })
                 },
             )
@@ -78,12 +82,13 @@ impl Event {
     pub fn update(handle: &str, input: &EventInput) -> Option<Self> {
         with_connection(|conn| {
             conn.execute(
-                "UPDATE event SET event_type=?1, place_text=?2, date_sortval=?3,
-                          date_text=?4, description=?5, private=?6,
+                "UPDATE event SET event_type=?1, place_handle=?2, place_text=?3, date_sortval=?4,
+                          date_text=?5, description=?6, private=?7,
                           change_date=strftime('%s','now')
-                 WHERE handle=?7",
+                 WHERE handle=?8",
                 rusqlite::params![
                     input.event_type,
+                    input.place_handle,
                     input.place_text,
                     input.date_sortval,
                     input.date_text,

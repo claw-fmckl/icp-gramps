@@ -145,6 +145,40 @@ fn get_person_death(person_handle: String) -> Option<db::event::Event> {
     db::person::get_death_event(&person_handle)
 }
 
+// --- Place API ---
+
+#[query]
+fn list_places() -> Vec<db::place::Place> {
+    db::place::Place::list()
+}
+
+#[query]
+fn get_place(handle: String) -> Option<db::place::Place> {
+    db::place::Place::get(&handle)
+}
+
+#[query]
+fn search_places(query: String) -> Vec<db::place::Place> {
+    db::place::Place::search(&query)
+}
+
+#[update]
+async fn create_place(input: db::place::PlaceInput) -> Option<db::place::Place> {
+    let handle = db::new_handle().await;
+    let gramps_id = with_connection(|conn| db::next_gramps_id(conn, "place"));
+    db::place::Place::create(&handle, &gramps_id, &input)
+}
+
+#[update]
+fn update_place(handle: String, input: db::place::PlaceInput) -> Option<db::place::Place> {
+    db::place::Place::update(&handle, &input)
+}
+
+#[update]
+fn delete_place(handle: String) -> bool {
+    db::place::Place::delete(&handle)
+}
+
 // --- Family API ---
 
 #[query]
